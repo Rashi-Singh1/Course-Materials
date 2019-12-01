@@ -1,0 +1,25 @@
+Semaphore : 
+
+	a non - neg integer
+	down - wait till its value is positive and then decrease its value by one
+	up - increase the value
+
+	Uses - 
+
+		Can visualize this like
+
+
+		A semaphore initialized to 0 may be used to wait for an event that will happen exactly once. For example, suppose thread A starts another thread B and wants to wait for B to signal that some activity is complete. A can create a semaphore initialized to 0, pass it to B as it starts it, and then "down" the semaphore. When B finishes its activity, it "ups" the semaphore. This works regardless of whether A "downs" the semaphore or B "ups" it first.
+
+			This meaning that intially 0 hai, and 1 means the event has occured. Therefore, down till it occurs and jab baaki ka kaam ho jae then up.
+
+		A semaphore initialized to 1 is typically used for controlling access to a resource. Before a block of code starts using the resource, it "downs" the semaphore, then after it is done with the resource it "ups" the resource. In such a case a lock, described below, may be more appropriate. 
+
+			This meaning that intially 1 hai, and 1 means free and 0 means acquired. So pehle down i.e. wait till it is free (+ve) and then make it 0 (acquire it) and when done increase it (i.e. make it free)
+
+Lock :
+	
+	works like semaphore only (the controlling access to a resourse para), differences are : 
+
+		* In a lock, max value 1 hi hogi and in semaphore can be more than 1 too
+		* In a lock, it can be released only by the thread that captured it

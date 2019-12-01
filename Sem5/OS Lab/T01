@@ -1,0 +1,58 @@
+CTAGS : 
+	this is used to find the function occurences across all files recursively from the current location ( that is where tags would be created)
+
+	Indexes are created for each funtion presence
+
+	Command : 
+
+		ctags -R 		//this generates a file "tags" which contains the info of all the indexes that are created
+
+	To use this feature : 
+
+		open the file.... cd relative_Address from the directory where tags is present/filename.c
+		place the cursor on the function call and press "ctrl + ]"
+
+		This takes to the function code
+
+		To go back to the function call, press "ctrl + T"
+
+
+CSCOPE : 
+	this is used to search various things like function names, egrep patterns, etc.
+	 Command : 
+
+	 	cscope -R
+
+	 this gives a list of things that we can find
+	 search there by typing in the name to be found in the correct field
+
+	*  TAB : to place the cursor to the input fields
+	*  ctrl + D to end cscope
+	*  multiple results are displayed as a list, enter the list item number to go there or place the cursor there and  	   press any key
+	*  press :q to go from opened search result to the page with input fields
+
+Task 1 : 
+
+	Gist : 
+
+		we need to modify the ready_list to be a sorted list based on the priority values of the threads. Also, needed to make to functions to increase priority and restore_priority
+	
+	*  Added "int prev_priority" to the struct thread in thread.h
+	*  Added function declarations to adjust priority in thread.h		(pre_priority was used here)
+	*  Made a comparator function for decreasing order of priorities
+	*  used inbuilt list function "list_insert_ordered" to add elements in sorted order where the parameter "list_less_func" was our comparator
+		
+		Till Now, sorting of ready_list was done and 19 test failed (required) came out.
+		This concludes Task 1
+
+*  Next task is to change timer_sleep in timer.c where function "thread_yield" was used to waste time and replace it with our function declarations of changing priority and updating next_alarm_click
+
+Task 2 : 
+
+	Gist : 
+
+		Suppose one thread does not want to be executed right now. It will go to sleep and give its execution time to some other threads. Before going to sleep, the thread would increase its priority so that after it is woken up, it does not have to wait a lot (i.e. the busy time is minimized).
+
+	*  Modified thread.h by adding "int64_t wake_up_at", "struct list_elem sleep_element" and "bool no_yield"
+	*  Added "sleep_list", "sleep_lock", "static int64_t next_wake_up_at" in thread.c
+	*  Added function "thread_block_list"
