@@ -1,0 +1,229 @@
+3:15pm : 
+
+	Data size : 64 bytes
+
+		PING stackoverflow.com (151.101.65.69) 56(84) bytes of data.
+
+			--- stackoverflow.com ping statistics ---
+			30 packets transmitted, 30 received, 0% packet loss, time 29016ms
+			rtt min/avg/max/mdev = 4.754/4.887/5.305/0.111 ms
+
+		PING imdb.com (52.94.225.248) 56(84) bytes of data.
+
+			--- imdb.com ping statistics ---
+			30 packets transmitted, 30 received, 0% packet loss, time 29011ms
+			rtt min/avg/max/mdev = 11.864/12.019/12.242/0.162 ms
+
+		PING wikipedia.org (208.80.154.224) 56(84) bytes of data.
+
+			--- wikipedia.org ping statistics ---
+			30 packets transmitted, 30 received, 0% packet loss, time 29011ms
+			rtt min/avg/max/mdev = 34.035/34.197/34.424/0.238 ms
+
+		PING youtube.com (64.233.177.91) 56(84) bytes of data.
+
+			--- youtube.com ping statistics ---
+			30 packets transmitted, 30 received, 0% packet loss, time 29008ms
+			rtt min/avg/max/mdev = 39.919/40.194/41.440/0.294 ms
+
+		PING amazon.in (52.95.116.115) 56(84) bytes of data.
+
+			--- amazon.in ping statistics ---
+			30 packets transmitted, 30 received, 0% packet loss, time 29009ms
+			rtt min/avg/max/mdev = 87.230/87.318/87.474/0.196 ms
+
+		PING codeforces.com (81.27.240.126) 56(84) bytes of data.
+
+			--- codeforces.com ping statistics ---
+			30 packets transmitted, 30 received, 0% packet loss, time 29008ms
+			rtt min/avg/max/mdev = 122.836/123.006/123.499/0.279 ms
+
+
+	Data Size : 128 bytes
+
+		PING stackoverflow.com (151.101.65.69) 120(148) bytes of data.
+
+		--- stackoverflow.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29002ms
+		rtt min/avg/max/mdev = 4.043/4.360/10.707/1.181 ms
+
+		PING imdb.com (52.94.225.248) 120(148) bytes of data.
+
+		--- imdb.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29002ms
+		rtt min/avg/max/mdev = 11.962/12.109/12.371/0.110 ms
+
+		PING wikipedia.org (208.80.154.224) 120(148) bytes of data.
+
+		--- wikipedia.org ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 89774ms
+		rtt min/avg/max/mdev = 34.129/34.349/34.556/0.216 ms
+
+		PING youtube.com (74.125.138.136) 120(148) bytes of data.
+
+		--- youtube.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29008ms
+		rtt min/avg/max/mdev = 40.169/40.350/40.529/0.217 ms
+
+		PING amazon.in (52.95.120.67) 120(148) bytes of data.
+
+		--- amazon.in ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29023ms
+		rtt min/avg/max/mdev = 88.816/88.926/89.051/0.165 ms
+
+		PING codeforces.com (81.27.240.126) 120(148) bytes of data.
+
+		--- codeforces.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29012ms
+		rtt min/avg/max/mdev = 122.120/122.272/122.395/0.318 ms
+
+
+	Data Size : 256 bytes
+
+		PING stackoverflow.com (151.101.65.69) 248(276) bytes of data.
+
+		--- stackoverflow.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29008ms
+		rtt min/avg/max/mdev = 4.184/4.282/4.458/0.069 ms
+
+		PING imdb.com (52.94.225.248) 248(276) bytes of data.
+
+		--- imdb.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29011ms
+		rtt min/avg/max/mdev = 12.123/12.304/12.512/0.164 ms
+
+		PING wikipedia.org (208.80.154.224) 248(276) bytes of data.
+
+		--- wikipedia.org ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29013ms
+		rtt min/avg/max/mdev = 34.263/34.453/35.010/0.180 ms
+
+		PING youtube.com (74.125.136.93) 248(276) bytes of data.
+
+		--- youtube.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29018ms
+		rtt min/avg/max/mdev = 40.692/40.872/41.085/0.263 ms
+
+		PING amazon.in (52.95.116.115) 248(276) bytes of data.
+
+		--- amazon.in ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29009ms
+		rtt min/avg/max/mdev = 89.187/89.321/89.439/0.341 ms
+
+		PING codeforces.com (81.27.240.126) 248(276) bytes of data.
+
+		--- codeforces.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29020ms
+		rtt min/avg/max/mdev = 121.603/121.695/121.829/0.364 ms
+
+	Data Size : 512 bytes
+
+		 PING stackoverflow.com (151.101.1.69) 504(532) bytes of data.
+
+		--- stackoverflow.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29011ms
+		rtt min/avg/max/mdev = 4.451/4.570/4.656/0.092 ms
+
+		PING imdb.com (52.94.225.248) 504(532) bytes of data.
+
+		--- imdb.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29016ms
+		rtt min/avg/max/mdev = 12.421/12.581/12.763/0.126 ms
+
+		PING wikipedia.org (208.80.154.224) 504(532) bytes of data.
+
+		--- wikipedia.org ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29017ms
+		rtt min/avg/max/mdev = 34.459/34.718/35+.238/0.302 ms
+
+		PING youtube.com (74.125.136.93) 504(532) bytes of data.
+
+		--- youtube.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29010ms
+		rtt min/avg/max/mdev = 40.716/41.048/41.787/0.290 ms
+
+		PING amazon.in (52.95.120.67) 504(532) bytes of data.
+
+		--- amazon.in ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29016ms
+		rtt min/avg/max/mdev = 87.577/87.675/87.843/0.196 ms
+
+		PING codeforces.com (81.27.240.126) 504(532) bytes of data.
+
+		--- codeforces.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29022ms
+		rtt min/avg/max/mdev = 122.675/122.796/122.918/0.139 ms
+
+	Data Size : 1024 bytes
+
+	PING stackoverflow.com (151.101.65.69) 1016(1044) bytes of data.
+
+		--- stackoverflow.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29004ms
+		rtt min/avg/max/mdev = 5.826/5.979/6.164/0.087 ms
+
+		PING imdb.com (52.94.237.74) 1016(1044) bytes of data.
+
+		--- imdb.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29007ms
+		rtt min/avg/max/mdev = 13.139/13.385/14.057/0.207 ms
+
+		PING wikipedia.org (208.80.154.224) 1016(1044) bytes of data.
+
+		--- wikipedia.org ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29010ms
+		rtt min/avg/max/mdev = 34.950/35.223/36.432/0.301 ms
+
+		PING youtube.com (74.125.21.91) 1016(1044) bytes of data.
+
+		--- youtube.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29002ms
+		rtt min/avg/max/mdev = 40.897/41.080/41.257/0.270 ms
+
+		PING amazon.in (52.95.120.67) 1016(1044) bytes of data.
+
+		--- amazon.in ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29006ms
+		rtt min/avg/max/mdev = 88.945/89.054/89.420/0.222 ms
+
+		PING codeforces.com (81.27.240.126) 1016(1044) bytes of data.
+
+		--- codeforces.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29010ms
+		rtt min/avg/max/mdev = 123.227/123.392/124.065/0.400 ms
+
+	Data Size : 2048 bytes
+
+		PING stackoverflow.com (151.101.1.69) 2040(2068) bytes of data.
+
+		--- stackoverflow.com ping statistics ---
+		30 packets transmitted, 0 received, 100% packet loss, time 29006ms
+
+		PING imdb.com (52.94.237.74) 2040(2068) bytes of data.
+
+		--- imdb.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29015ms
+		rtt min/avg/max/mdev = 13.673/13.903/14.951/0.230 ms
+
+		PING wikipedia.org (208.80.154.224) 2040(2068) bytes of data.
+
+		--- wikipedia.org ping statistics ---
+		30 packets transmitted, 0 received, 100% packet loss, time 29001ms
+		
+		PING youtube.com (64.233.177.136) 2040(2068) bytes of data.
+
+		--- youtube.com ping statistics ---
+		30 packets transmitted, 0 received, 100% packet loss, time 140573ms
+
+
+		PING amazon.in (52.95.116.115) 2040(2068) bytes of data.
+
+		--- amazon.in ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29005ms
+		rtt min/avg/max/mdev = 91.971/92.063/92.184/0.371 ms
+
+		PING codeforces.com (81.27.240.126) 2040(2068) bytes of data.
+
+		--- codeforces.com ping statistics ---
+		30 packets transmitted, 30 received, 0% packet loss, time 29005ms
+		rtt min/avg/max/mdev = 123.857/124.012/124.136/0.191 ms

@@ -1,0 +1,35 @@
+PING stackoverflow.com (151.101.65.69) 56(84) bytes of data.
+
+--- stackoverflow.com ping statistics ---
+30 packets transmitted, 30 received, 0% packet loss, time 29022ms
+rtt min/avg/max/mdev = 4.652/4.818/5.070/0.125 ms
+
+PING imdb.com (52.94.237.74) 56(84) bytes of data.
+
+--- imdb.com ping statistics ---
+30 packets transmitted, 30 received, 0% packet loss, time 29021ms
+rtt min/avg/max/mdev = 11.464/11.674/12.008/0.151 ms
+
+PING wikipedia.org (208.80.154.224) 56(84) bytes of data.
+
+--- wikipedia.org ping statistics ---
+30 packets transmitted, 30 received, 0% packet loss, time 29012ms
+rtt min/avg/max/mdev = 33.284/33.510/33.823/0.272 ms
+
+PING youtube.com (74.125.138.93) 56(84) bytes of data.
+
+--- youtube.com ping statistics ---
+30 packets transmitted, 30 received, 0% packet loss, time 29020ms
+rtt min/avg/max/mdev = 40.476/40.705/40.931/0.219 ms
+
+PING amazon.in (52.95.120.67) 56(84) bytes of data.
+
+--- amazon.in ping statistics ---
+30 packets transmitted, 30 received, 0% packet loss, time 29006ms
+rtt min/avg/max/mdev = 86.884/87.009/87.255/0.241 ms
+
+PING codeforces.com (81.27.240.126) 56(84) bytes of data.
+
+--- codeforces.com ping statistics ---
+30 packets transmitted, 30 received, 0% packet loss, time 29015ms
+rtt min/avg/max/mdev = 121.657/121.803/122.281/0.498 ms
