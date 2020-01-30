@@ -209,6 +209,8 @@ ip.addr==162.125.82.6
 143.204.229.69	assets.dropbox.com
 162.125.80.5	edge-block-previews-video-live.dropbox-dns.com
 162.125.82.1	www.dropbox-dns.com
+162.125.82.6	edge-block-www.dropbox-dns.com
+
 
 HOST IP addresses
 ip.addr==143.204.229.15	||ip.addr==162.125.19.131	||ip.addr==104.16.99.29	||ip.addr==143.204.229.110	||ip.addr==143.204.229.19	||ip.addr==104.16.100.29	||ip.addr==162.125.80.6	||ip.addr==143.204.229.69	||ip.addr==162.125.80.5	||ip.addr==162.125.82.1	
