@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage{blindtext}
+\usepackage{multirow}
+\begin{document}
+	\title{Inserting Table in LaTex}
+	\author{Rashi}
+	\date{\today}
+	\maketitle
+	\blindtext[2]
+	\begin{table*}[h]
+		\centering
+		\caption{Cost of fruits in India}
+		\vspace{0.5cm}
+		\begin{tabular}{||c|c|c|c|c||}
+			\hline
+			\multicolumn{2}{||c|}{Fruit Details} & \multicolumn{3}{c||}{Cost Calculations} \\ \hline
+			Fruit name & Type & No. of units & Cost/Unit & Cost(Rs.) \\ \hline
+			\multirow[t]{2}{*}{Mango} & Malgoa & 20 & 75 & 1500 \\ \cline{2-5}
+			& Alfonso & 20 & 85 & 1700 \\ \hline
+			Jackfruits & Kolli Hills & \multirow[t]{2}{*}{10} & 50 & 500 \\ \cline{1-2} \cline{4-5} 
+			Banana & Green & & 20 & 200 \\ \hline
+			\multicolumn{4}{||c|}{\textbf{Total cost (Rs.)}} & \textbf{3900} \\ \hline
+		\end{tabular}
+	\end{table*}
+\end{document}

@@ -1,0 +1,60 @@
+\documentclass{report}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{systeme}
+\usepackage{multicol}
+\usepackage{blindtext}
+\usepackage{xcolor}
+\begin{document}
+	\begin{center}
+	\begin{LARGE}\textbf{A Technical Report\\
+		\vspace{1cm}
+		on\\ \vspace{1.2cm}
+		Demonstration of Different Type of Equations\\
+		\vspace{2cm}
+		Author Name Rashi	
+}
+	\end{LARGE}\\
+	\vspace{3cm}
+	\includegraphics[width=0.2\linewidth]{IITG-logo.png}\\
+	\vspace{2cm}
+	\begin{LARGE}
+		Department of Computer science and engineering
+		IIT Guwahati, Assam, India.
+	\end{LARGE}
+	\end{center}
+	\vspace{6cm}
+	\centering
+	\paragraph{\textbf{Task1:}}The following are the examples of the system of equations\\
+	\begin{equation}\nonumber
+	\begin{cases}
+		x+y-z=2\\	
+		x+y+z=\frac{5}{2}\\
+		x+y+z=5
+	\end{cases}
+	\end{equation}
+	\begin{multicols}{2}
+		\begin{flushleft}
+			\textbf{Task2}
+		\end{flushleft}
+		$$x=a_0 + \frac{1}{a_1 + \frac{1}{a_2 + \frac{1}{a_3+a_4}}}$$
+		\blindtext[2]
+	\end{multicols}
+	\textbf{Task3}Write the following equations for inverted pendulum:
+	\begin{eqnarray}
+	\frac{d}{dt}
+	\begin{bmatrix}
+	x1\\x2\\x3\\x4
+	\end{bmatrix} &=& \begin{bmatrix}
+	0&0&1&0\\0&0&0&1\\0&-\gamma&0&0\\0&\alpha&1&0
+	\end{bmatrix} \begin{bmatrix}
+	x1\\x2\\x3\\x4
+	\end{bmatrix} + 
+	\begin{bmatrix}
+	0\\0\\-\delta\\-\beta
+	\end{bmatrix} \Delta\mu\\
+	a&=&b\\\Delta\mu u(t) &=& K(e(t))+\frac{d}{dt}\int_{0}^{t}e(t)dt+\tau_d\frac{de(t)}{dt}
+	\end{eqnarray}
+	The \color{red}equation3 \color{black}can be refered any places in the document
+\end{document}

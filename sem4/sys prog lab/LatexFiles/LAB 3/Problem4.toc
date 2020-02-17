@@ -1,5 +1,0 @@
-\beamer@sectionintoc {2}{Introduction to Latex}{3}{0}{1}
-\beamer@subsectionintoc {2}{1}{Latex}{3}{0}{1}
-\beamer@subsectionintoc {2}{2}{History}{4}{0}{1}
-\beamer@sectionintoc {3}{Editors}{5}{0}{2}
-\beamer@sectionintoc {4}{Compilation}{6}{0}{3}

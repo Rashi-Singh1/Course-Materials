@@ -1,0 +1,90 @@
+\documentclass[12pt]{article}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{fixltx2e}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\begin{document}
+	
+	\title{Practice \LaTeX \ Doc}
+	\author{Rashi}
+	\date{\today}
+	\maketitle
+	
+	\tableofcontents
+	\vspace{2cm}
+	\begin{tabular}{| c | c | c | c | c |}
+		\hline \hline
+		Name & Age & State & Nation & Branch \\
+		\hline
+		\multirow{2}{*}{Rashi} & 20 &\multicolumn{2}{c}{\multirow{2}{*}{Rest of India}} \vline & CSE \\ \cline{2-2} \cline{5-5}
+		& 20 & \multicolumn{2}{c}{} \vline& CSE \\ 
+		\hline
+		Buggy & 18 & & & \\
+		\hline \hline
+	\end{tabular}
+	\begin{tabular}{| c | c | c | c | c |}
+		\hline \hline
+		Name & Age & State & Nation & Branch \\
+		\hline
+		Rashi & 20 & Punjab & India & CSE \\ \hline
+		Paul & 20 & \multicolumn{2}{c}{Rest of India} \vline & CSE \\ \hline
+		Buggy & 18 & & & \\
+		\hline \hline
+	\end{tabular}
+
+	\begin{center}	
+		\begin{eqnarray}
+		x^2+2*x+1&=& \ 0 \\
+		(x+1)^2&=&\ 0 \\
+		x+1&=& \ 0 \\
+		x&=&-1
+		\end{eqnarray}
+		
+		\texttt{Rashi} is great \\
+		\textit{Rashi} is great \\
+		\vspace{5cm}
+		\textbf{Rashi} is great \\
+		\textsc{Rashi} is great \\
+		\begin{large}Rashi\end{large}\\
+		\begin{Large}Rashi\end{Large}\\
+		\begin{huge}Rashi\end{huge}\\
+		\begin{Huge}Rashi\end{Huge}\\
+		\begin{small}Rashi\end{small}\\
+		\begin{tiny}Rashi\end{tiny}
+		
+	\end{center}
+	\section{Rashi}
+		\subsection{Childhood}
+		Born in Jalandhar, i lived in the company of 3 people:
+			\subsubsection{Papa}
+			\subsubsection{Mummy}
+			\subsubsection{Didi}
+		\subsection{School Life}
+		\subsection{JEE Coaching}
+		\subsection{IIT Guwahati}
+	\section{Paul}	
+		\subsection{Childhood}
+		\subsection{School Life}
+		\subsection{JEE Coaching}
+		\subsection{IIT Guwahati}
+		\begin{flushright}
+				\textsubscript{not}\\
+				IITG is great \^ \ .\\
+				\textsuperscript{lalala}
+		\end{flushright}
+	
+	The set of natural numbers is denoted by $\mathbb{ABCDEFGHIJKLMNOPQRSTUVWXYZ}$.
+	
+	\def\myLabel{Rashi is great}
+	\textbf{\myLabel}
+	\vspace{1in}
+	\def\myeq{y=\frac{x}{3x^2+x+1}}
+	$$\displaystyle \myeq$$
+	\begin{center}
+		\includegraphics[scale=6]{LatexImg/img.jpg}	
+	\end{center}
+	
+\end{document}
+
