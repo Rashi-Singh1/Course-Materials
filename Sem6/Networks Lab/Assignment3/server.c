@@ -5,7 +5,7 @@
 #include <stdlib.h> 
 #include <netinet/in.h> 
 #include <string.h> 
-#define PORT 8080 
+#define PORT 9002
 typedef struct sockaddr_in socketAddress;
 
 void printError(char* msg)
