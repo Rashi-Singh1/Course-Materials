@@ -3,8 +3,8 @@
 all: a.out
 
 a.out: client.c server.c
-	gcc client.c -o client
-	gcc server.c -o server 
+	gcc client.c -o out/client
+	gcc server.c -o out/server 
 
 clean: 
-	-rm -f *.o a.out
+	-rm -f out/*.o 
