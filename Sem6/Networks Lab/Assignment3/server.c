@@ -18,6 +18,11 @@ void printError(char* msg)
 	exit(EXIT_FAILURE);
 }
 
+void printError_without_Exit(char* msg)
+{
+    perror(msg);
+}
+
 void printClientDetails(socketAddress client_TCP_addr, int connection_socket_desc)
 {
    
@@ -94,8 +99,7 @@ int main(int argc , char *argv[])
 
         if( pthread_create( &thread_id , NULL ,  connection_handler , (void*) &cur_client_details) < 0)
         {
-            printError("Could not create thread");
-            return 1;
+            printError_without_Exit("Could not create thread");
         }
          
         //Now join the thread , so that we dont terminate before the thread
@@ -132,13 +136,7 @@ void *connection_handler(void* cur_client)
 
     char UDP_PORT_str[MAX_BUFFER_SIZE];
     sprintf(UDP_PORT_str,"%d",UDP_PORT);
-    
-	send(cur_connection_socket , UDP_PORT_str , strlen(UDP_PORT_str) , 0 ); 
-	printf("UDP PORT sent to"); 
-    printClientDetails(cur_client_addr,cur_connection_socket);
-    printf("\n\n");
 
-    close(cur_connection_socket);
 
     //**************UDP port negotiation completed******************
 
@@ -146,47 +144,64 @@ void *connection_handler(void* cur_client)
 
     // Creating socket file descriptor 
     //******confirm from Paul whether we need already created separate threads for each UDP connection*******
-    if ( (server_UDP_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) printError("server UDP creation failure");
-      
-    socketAddress server_UDP_addr;       
-    memset(&server_UDP_addr, 0, sizeof(server_UDP_addr)); 
-      
-    // Filling server information 
-    server_UDP_addr.sin_family = AF_INET; // IPv4 
-    server_UDP_addr.sin_port = htons(UDP_PORT); 
-    server_UDP_addr.sin_addr.s_addr = INADDR_ANY; 
+    if ( (server_UDP_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+        printError_without_Exit("server UDP creation failure");
+        send(cur_connection_socket , "" , 0 , 0 ); 
+        close(cur_connection_socket);
+    }
+    else{
+        socketAddress server_UDP_addr;       
+        memset(&server_UDP_addr, 0, sizeof(server_UDP_addr)); 
+        
+        // Filling server information 
+        server_UDP_addr.sin_family = AF_INET; // IPv4 
+        server_UDP_addr.sin_port = htons(UDP_PORT); 
+        server_UDP_addr.sin_addr.s_addr = INADDR_ANY; 
 
-    cur_client_details->connection_socket_desc = server_UDP_socket;
-      
-    // Bind the socket with the server address 
-    if ( bind(server_UDP_socket, (const socketAddressPtr)&server_UDP_addr, sizeof(server_UDP_addr)) < 0 ) printError("Server UDP socket bind failure");
-    else printf("Server UDP socket bind success for");
+        cur_client_details->connection_socket_desc = server_UDP_socket;
+        
+        // Bind the socket with the server address 
+        if ( bind(server_UDP_socket, (const socketAddressPtr)&server_UDP_addr, sizeof(server_UDP_addr)) < 0 ) {
+            printError_without_Exit("Server UDP socket bind failure");
+            send(cur_connection_socket , "" , 0 , 0 ); 
+            close(cur_connection_socket);
+        }
+        else {
+            printf("Server UDP socket bind success for");
+            printClientDetails(cur_client_addr,cur_connection_socket);
+            
+            send(cur_connection_socket , UDP_PORT_str , strlen(UDP_PORT_str) , 0 ); 
+            printf("UDP PORT sent to"); 
+            printClientDetails(cur_client_addr,cur_connection_socket);
+            printf("\n\n");
+            close(cur_connection_socket);
 
-    printClientDetails(cur_client_addr,cur_connection_socket);
-      
-    socketAddress client_UDP_addr;
-    memset(&client_UDP_addr, 0, sizeof(client_UDP_addr)); 
+            socketAddress client_UDP_addr;
+            memset(&client_UDP_addr, 0, sizeof(client_UDP_addr)); 
 
-    int client_UDP_addr_len = sizeof(client_UDP_addr);  
-  
-    char client_msg[MAX_BUFFER_SIZE]; 
-    int client_msg_len;   
+            int client_UDP_addr_len = sizeof(client_UDP_addr);  
+        
+            char client_msg[MAX_BUFFER_SIZE]; 
+            int client_msg_len;   
 
-    client_msg_len = recvfrom(server_UDP_socket, (char *)client_msg, MAX_BUFFER_SIZE, MSG_WAITALL, (socketAddressPtr) &client_UDP_addr, &client_UDP_addr_len); 
-    client_msg[client_msg_len] = '\0'; 
-    printf("UDP msg : %s\nfrom", client_msg); 
-    printClientDetails(cur_client_addr,cur_connection_socket);
+            client_msg_len = recvfrom(server_UDP_socket, (char *)client_msg, MAX_BUFFER_SIZE, MSG_WAITALL, (socketAddressPtr) &client_UDP_addr, &client_UDP_addr_len); 
+            client_msg[client_msg_len] = '\0'; 
+            printf("UDP msg : %s\nfrom", client_msg); 
+            printClientDetails(cur_client_addr,cur_connection_socket);
 
-    char server_reply[MAX_BUFFER_SIZE];
-    printf("Please input msg response for");
-    printClientDetails(cur_client_addr,cur_connection_socket);
+            char server_reply[MAX_BUFFER_SIZE];
+            printf("Please input msg response for");
+            printClientDetails(cur_client_addr,cur_connection_socket);
 
-    scanf("%s",server_reply);
+            scanf("%s",server_reply);
 
-    sendto(server_UDP_socket, (const char *)server_reply, strlen(server_reply), MSG_CONFIRM, (socketAddressPtr) &client_UDP_addr, client_UDP_addr_len); 
-    printf("Server reply sent to");
-    printClientDetails(cur_client_addr,cur_connection_socket);
+            sendto(server_UDP_socket, (const char *)server_reply, strlen(server_reply), MSG_CONFIRM, (socketAddressPtr) &client_UDP_addr, client_UDP_addr_len); 
+            printf("Server reply sent to");
+            printClientDetails(cur_client_addr,cur_connection_socket);
+        }
+    }
 
     close(server_UDP_socket);
+    
     return 0;
 } 

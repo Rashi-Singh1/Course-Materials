@@ -44,6 +44,11 @@ int main(int argc, char const *argv[])
 	read_status = read( client_TCP_socket , UDP_port_str, MAX_BUFFER_SIZE); 
 	printf("Server UDP port : %s\n\n\n",UDP_port_str ); 
 
+    if(strlen(UDP_port_str) <= 0) {
+        printf("Invalid server port\n");
+        return 0;
+    }
+    
     int UDP_PORT = atoi(UDP_port_str);
 
     close(client_TCP_socket);
@@ -55,6 +60,8 @@ int main(int argc, char const *argv[])
     // Creating socket file descriptor 
     if ( (client_UDP_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) printError("Client UDP Socket not created");
     else printf("Client UDP socket created successfully\n");
+
+    if(UDP_PORT < 0 ) printError("Invalid server port");
 
     //filling server information
     socketAddress server_UDP_addr; 
