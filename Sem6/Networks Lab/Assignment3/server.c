@@ -57,36 +57,38 @@ void printfError(char* msg)
     exit(EXIT_FAILURE);
 }
 
-void printDetails(socketAddress client_TCP_addr, int connection_socket_desc, Protocol pro, Message* message, MSG_STATUS msg_stat, CON_STATUS stat)
+void printDetails(socketAddress client_TCP_addr, int connection_socket_desc, int pro, Message message, int msg_stat, int stat)
 {
-    char* curProtocol = pro == TCP ? "TCP" : "UDP";
-    char* conStatus = stat == ACTIVE ? "ACTIVE" : "CLOSED";
-    char* msgStatus = "-------";
-    if(msg_stat == SENT) strcpy(msgStatus,"SENT");
+    char curProtocol[5];
+    char conStatus[10];
+
+    if(pro == TCP) strcpy(curProtocol,"TCP");
+    else strcpy(curProtocol,"UDP");
+
+    if(stat == ACTIVE) strcpy(conStatus,"ACTIVE");
+    else strcpy(conStatus,"CLOSED");
+
+    char msgStatus[10] = "--------";
+    char colon[5] = "::";
+    if(msg_stat == SENT) strcpy(msgStatus,"SENT    ");
     else if(msg_stat == RECEIVED) strcpy(msgStatus,"RECEIVED");
 
-    printf(" %s\t%d\t%d\t%s\t%d:: %s\t%s\t%s\n",  
+    if(message.type == -1) strcpy(colon,"");
+
+    printf("  %s   %s\t  %d\t    %d\t\t %s\t%s %d%s %s\n",  
+        conStatus,
         inet_ntoa(client_TCP_addr.sin_addr) , 
         ntohs(client_TCP_addr.sin_port),
         connection_socket_desc,
         curProtocol,
-        message->type,
-        message->msg,
         msgStatus,
-        conStatus
+        message.type,
+        colon,
+        message.msg
     );
-    printf("YOU reached print\n");
     
 }
-
-Message* formEmptyMsg()
-{
-    Message* emptyMessage;
-    emptyMessage->type = -1;
-    strcpy(emptyMessage->msg,"------");
-    emptyMessage->len = 0;
-    return emptyMessage;
-}
+ Message emptyMessage;
 
 //the thread function
 void *connection_handler(void* );
@@ -96,6 +98,12 @@ int main(int argc , char *argv[])
     //initialize ports
     int i = 0;
     for(i = 0;i < 300;i++) freePorts[i] = true;
+
+    //intialize empty msg
+
+    emptyMessage.type = -1;
+    strcpy(emptyMessage.msg,"------");
+    emptyMessage.len = 0;
 
     if(argc!=2)
     {
@@ -128,7 +136,7 @@ int main(int argc , char *argv[])
     //Listen
     if(listen(server_TCP_socket , 3) < 0) printError("Listen error");
     else puts("Waiting for incoming connections...\n\n");
-    puts("\nClient IP\t Client port\t Connection socket\t Protocol\t Message \t Message Status\t Connection Status\n\n");  
+    puts("\nConnection Client-IP  Client-port  Socket-ID  Protocol\tMsg-Status\tMessage");  
     puts("--------------------------------------------------------------------------------------------------------------------------------");  
 
     //connection socket after TCP handshake
@@ -148,13 +156,11 @@ int main(int argc , char *argv[])
         )) 
     )
     {
-        printf("Echo\n");
-        // printf("New connection Accepted:");
         printDetails( 
             client_TCP_addr,
             connection_socket,
             TCP,
-            formEmptyMsg(),
+            emptyMessage,
             NONE,
             ACTIVE
         ); 
@@ -201,7 +207,7 @@ void *connection_handler(void* cur_client)
     Message message; 
 
     int read_status = read( cur_connection_socket , &message, sizeof(message)); 
-    printDetails(cur_client_addr,cur_connection_socket,TCP,&message,RECEIVED,ACTIVE);
+    printDetails(cur_client_addr,cur_connection_socket,TCP,message,RECEIVED,ACTIVE);
 
     int UDP_PORT = findFreePort();
     if(UDP_PORT == -1) printfError_without_Exit("Client limit exceeded");
@@ -252,10 +258,10 @@ void *connection_handler(void* cur_client)
 
 
                 // printf("Message type %d:\t UDP PORT number %d sent to Client:", message.type, UDP_PORT); 
-                printDetails(cur_client_addr,cur_connection_socket,UDP,&message,SENT,ACTIVE);
+                printDetails(cur_client_addr,cur_connection_socket,UDP,message,SENT,ACTIVE);
                 printf("\n\n");
                 close(cur_connection_socket); //CLose TCP connection
-                printf("------------- TCP connection closed ------------\n");
+                // printf("------------- TCP connection closed ------------\n");
 
                 socketAddress client_UDP_addr;
                 memset(&client_UDP_addr, 0, sizeof(client_UDP_addr)); 
@@ -267,7 +273,7 @@ void *connection_handler(void* cur_client)
                 client_msg_len = recvfrom(server_UDP_socket, &message, sizeof(message) , MSG_WAITALL, (socketAddressPtr) &client_UDP_addr, &client_UDP_addr_len); 
                 message.msg[message.len] = '\0'; 
                 // printf("Message type %d:\n UDP message received: %s\nfrom Client:", message.type, message.msg); 
-                printDetails(cur_client_addr,cur_connection_socket,UDP,&message,RECEIVED,ACTIVE);
+                printDetails(cur_client_addr,cur_connection_socket,UDP,message,RECEIVED,ACTIVE);
 
                 char server_reply[MAX_BUFFER_SIZE] = "Message_received_successfully\n";
 
@@ -278,14 +284,14 @@ void *connection_handler(void* cur_client)
                 strcpy(message.msg, server_reply);
                 sendto(server_UDP_socket, &message, sizeof(message) , MSG_CONFIRM, (socketAddressPtr) &client_UDP_addr, client_UDP_addr_len); 
                 // printf("Message type %d:\nServer reply sent to", message.type);
-                printDetails(cur_client_addr,cur_connection_socket,UDP,&message,SENT,ACTIVE);
+                printDetails(cur_client_addr,cur_connection_socket,UDP,message,SENT,ACTIVE);
             }
         }
 
 
         close(server_UDP_socket);
         freePorts[UDP_PORT - basePort] = true;
-        printf("------------- UDP socket closed ------------\n");
+        // printf("------------- UDP socket closed ------------\n");
     }
     freePorts[UDP_PORT - basePort] = true;
     return 0;
