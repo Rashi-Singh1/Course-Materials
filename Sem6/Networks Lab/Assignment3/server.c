@@ -2,20 +2,43 @@
 #include<string.h>    //strlen
 #include<stdlib.h>    //strlen
 #include<sys/socket.h>
+#include<stdbool.h>
 #include<arpa/inet.h> //inet_addr
 #include<unistd.h>    //write
 #include<pthread.h> //for threading , link with lpthread
 
 #define MAX_BUFFER_SIZE 1024
-#define PORT 9002
+//#define PORT 9002
 typedef struct connectionDetails details;
 typedef struct sockaddr_in socketAddress;
 typedef struct sockaddr* socketAddressPtr;
+typedef struct message_format Message;
+typedef enum protocol Protocol;
+typedef enum con_status CON_STATUS;
+typedef enum msg_status MSG_STATUS;
+enum protocol {TCP, UDP};
+enum con_status {ACTIVE, CLOSED};
+enum msg_status {SENT, RECEIVED, NONE};
+
+bool freePorts[300];
+int basePort = 1800;
+
+struct message_format
+{
+    uint8_t type;
+    uint16_t len;
+    char msg[MAX_BUFFER_SIZE];
+};
+
+struct connectionDetails{
+    int connection_socket_desc;
+    socketAddress cur_client_addr;
+}; 
 
 void printError(char* msg)
 {
     perror(msg); 
-	exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);
 }
 
 void printError_without_Exit(char* msg)
@@ -23,38 +46,74 @@ void printError_without_Exit(char* msg)
     perror(msg);
 }
 
-void printClientDetails(socketAddress client_TCP_addr, int connection_socket_desc)
+void printfError_without_Exit(char* msg)
 {
-   
-    printf("\n\tclient IP : %s \n\tclient port : %d\n\tvia connection socket : %d\n\n",  
-        inet_ntoa(client_TCP_addr.sin_addr) , 
-        ntohs(client_TCP_addr.sin_port),
-        connection_socket_desc
-    );
+    printf("%s\n",msg);
 }
 
-struct connectionDetails{
-    int connection_socket_desc;
-    socketAddress cur_client_addr;
-}; 
+void printfError(char* msg)
+{
+    printf("%s\n",msg);
+    exit(EXIT_FAILURE);
+}
+
+void printDetails(socketAddress client_TCP_addr, int connection_socket_desc, Protocol pro, Message* message, MSG_STATUS msg_stat, CON_STATUS stat)
+{
+    char* curProtocol = pro == TCP ? "TCP" : "UDP";
+    char* conStatus = stat == ACTIVE ? "ACTIVE" : "CLOSED";
+    char* msgStatus = "-------";
+    if(msg_stat == SENT) strcpy(msgStatus,"SENT");
+    else if(msg_stat == RECEIVED) strcpy(msgStatus,"RECEIVED");
+
+    printf(" %s\t%d\t%d\t%s\t%d:: %s\t%s\t%s\n",  
+        inet_ntoa(client_TCP_addr.sin_addr) , 
+        ntohs(client_TCP_addr.sin_port),
+        connection_socket_desc,
+        curProtocol,
+        message->type,
+        message->msg,
+        msgStatus,
+        conStatus
+    );
+    printf("YOU reached print\n");
+    
+}
+
+Message* formEmptyMsg()
+{
+    Message* emptyMessage;
+    emptyMessage->type = -1;
+    strcpy(emptyMessage->msg,"------");
+    emptyMessage->len = 0;
+    return emptyMessage;
+}
 
 //the thread function
 void *connection_handler(void* );
  
 int main(int argc , char *argv[])
 {
+    //initialize ports
+    int i = 0;
+    for(i = 0;i < 300;i++) freePorts[i] = true;
+
+    if(argc!=2)
+    {
+        printError("Use command ./server <server port number>");
+    }
     int server_TCP_socket;
-     
+    int PORT = atoi(argv[1]);
+
     //Create welcome socket
     server_TCP_socket = socket(AF_INET , SOCK_STREAM , 0);
     if (server_TCP_socket == -1) printError("Welcome socket not created");
-    else puts("Welcome socket created successfully\n");
+    else puts("TCP Welcome socket created successfully");
      
     //fill the welcome socket address
     socketAddress server_TCP_addr; 
     server_TCP_addr.sin_family = AF_INET;
 
-    //*********TODO: change this to user input IP and PORT********
+    //Server IP is localhost and PORT is taken from command line
     server_TCP_addr.sin_addr.s_addr = INADDR_ANY;
     server_TCP_addr.sin_port = htons( PORT );
      
@@ -64,21 +123,23 @@ int main(int argc , char *argv[])
                 sizeof(server_TCP_addr)
             ) < 0) 
         printError("Welcome socket bind failure");
-    else puts("Welcome socket bind success");
+    else puts("TCP Welcome socket bind success!");
      
     //Listen
     if(listen(server_TCP_socket , 3) < 0) printError("Listen error");
-    else puts("Waiting for incoming connections...");
+    else puts("Waiting for incoming connections...\n\n");
+    puts("\nClient IP\t Client port\t Connection socket\t Protocol\t Message \t Message Status\t Connection Status\n\n");  
+    puts("--------------------------------------------------------------------------------------------------------------------------------");  
 
     //connection socket after TCP handshake
     int connection_socket;
 
     //to store the client socket details which sent the connection request
-	socketAddress client_TCP_addr;
+    socketAddress client_TCP_addr;
     int client_TCP_addr_len = sizeof(socketAddress);
 
     //new thread for each new client
-	pthread_t thread_id;
+    pthread_t thread_id;
 
     while( (connection_socket = accept(
             server_TCP_socket, 
@@ -87,10 +148,15 @@ int main(int argc , char *argv[])
         )) 
     )
     {
-        printf("New connection ");
-        printClientDetails( 
+        printf("Echo\n");
+        // printf("New connection Accepted:");
+        printDetails( 
             client_TCP_addr,
-            connection_socket
+            connection_socket,
+            TCP,
+            formEmptyMsg(),
+            NONE,
+            ACTIVE
         ); 
 
         details cur_client_details;
@@ -100,6 +166,7 @@ int main(int argc , char *argv[])
         if( pthread_create( &thread_id , NULL ,  connection_handler , (void*) &cur_client_details) < 0)
         {
             printError_without_Exit("Could not create thread");
+            // close(connection_socket);
         }
          
         //Now join the thread , so that we dont terminate before the thread
@@ -110,6 +177,15 @@ int main(int argc , char *argv[])
     return 0;
 }
  
+int findFreePort()
+{
+    int freeIndex = 0;
+    for(freeIndex = 0; freeIndex < 300; freeIndex++)
+    {
+        if(freePorts[freeIndex]) return freeIndex + basePort;
+    }
+    return -1;
+}
 
 /*
  * This will handle connection for each client
@@ -121,87 +197,96 @@ void *connection_handler(void* cur_client)
     int cur_connection_socket = cur_client_details->connection_socket_desc;
     socketAddress cur_client_addr = cur_client_details->cur_client_addr;
 
-    // int cur_TCP_connection_socket = *(int*)socket_desc;
-    char client_request_msg[MAX_BUFFER_SIZE] = {0}; 
+    //To store and send message of given format
+    Message message; 
 
-    int read_status = read( cur_connection_socket , client_request_msg, MAX_BUFFER_SIZE); 
-	printf("Client Request : %s \nfrom",client_request_msg ); 
-    printClientDetails(cur_client_addr,cur_connection_socket);
+    int read_status = read( cur_connection_socket , &message, sizeof(message)); 
+    printDetails(cur_client_addr,cur_connection_socket,TCP,&message,RECEIVED,ACTIVE);
 
-    printf("Please input UDP port number for\n");
-    printClientDetails(cur_client_addr,cur_connection_socket);
-    
-    int UDP_PORT;
-    scanf("%d",&UDP_PORT);
-
-    char UDP_PORT_str[MAX_BUFFER_SIZE];
-    sprintf(UDP_PORT_str,"%d",UDP_PORT);
-
-
-    //**************UDP port negotiation completed******************
-
-    int server_UDP_socket; 
-
-    // Creating socket file descriptor 
-    //******confirm from Paul whether we need already created separate threads for each UDP connection*******
-    if ( (server_UDP_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
-        printError_without_Exit("server UDP creation failure");
-        send(cur_connection_socket , "" , 0 , 0 ); 
-        close(cur_connection_socket);
-    }
+    int UDP_PORT = findFreePort();
+    if(UDP_PORT == -1) printfError_without_Exit("Client limit exceeded");
     else{
-        socketAddress server_UDP_addr;       
-        memset(&server_UDP_addr, 0, sizeof(server_UDP_addr)); 
-        
-        // Filling server information 
-        server_UDP_addr.sin_family = AF_INET; // IPv4 
-        server_UDP_addr.sin_port = htons(UDP_PORT); 
-        server_UDP_addr.sin_addr.s_addr = INADDR_ANY; 
+        /**************Check if UDP socket creation or bind fail******************/
+        freePorts[UDP_PORT - basePort] = false;
 
-        cur_client_details->connection_socket_desc = server_UDP_socket;
-        
-        // Bind the socket with the server address 
-        if ( bind(server_UDP_socket, (const socketAddressPtr)&server_UDP_addr, sizeof(server_UDP_addr)) < 0 ) {
-            printError_without_Exit("Server UDP socket bind failure");
+        int server_UDP_socket; 
+        char UDP_PORT_str[MAX_BUFFER_SIZE];
+        sprintf(UDP_PORT_str,"%d",UDP_PORT);
+
+        // Creating socket file descriptor 
+        if ( (server_UDP_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
+            printError_without_Exit("server UDP creation failure");
             send(cur_connection_socket , "" , 0 , 0 ); 
             close(cur_connection_socket);
+            freePorts[UDP_PORT - basePort] = true;
+
         }
-        else {
-            printf("Server UDP socket bind success for");
-            printClientDetails(cur_client_addr,cur_connection_socket);
+        else{
+            socketAddress server_UDP_addr;       
+            memset(&server_UDP_addr, 0, sizeof(server_UDP_addr)); 
             
-            send(cur_connection_socket , UDP_PORT_str , strlen(UDP_PORT_str) , 0 ); 
-            printf("UDP PORT sent to"); 
-            printClientDetails(cur_client_addr,cur_connection_socket);
-            printf("\n\n");
-            close(cur_connection_socket);
+            // Filling server information 
+            server_UDP_addr.sin_family = AF_INET; // IPv4 
+            server_UDP_addr.sin_port = htons(UDP_PORT); 
+            server_UDP_addr.sin_addr.s_addr = INADDR_ANY; 
 
-            socketAddress client_UDP_addr;
-            memset(&client_UDP_addr, 0, sizeof(client_UDP_addr)); 
+            cur_client_details->connection_socket_desc = server_UDP_socket;
+            
+            // Bind the socket with the server address 
+            if ( bind(server_UDP_socket, (const socketAddressPtr)&server_UDP_addr, sizeof(server_UDP_addr)) < 0 ) {
+                printError_without_Exit("Server UDP socket bind failure");
+                send(cur_connection_socket , "" , 0 , 0 ); 
+                close(cur_connection_socket);
+                freePorts[UDP_PORT - basePort] = true;
 
-            int client_UDP_addr_len = sizeof(client_UDP_addr);  
-        
-            char client_msg[MAX_BUFFER_SIZE]; 
-            int client_msg_len;   
+            }
+            else {
+                // printf("Server UDP socket bind success\nPORT: %d\nClient:",UDP_PORT);
+                // printDetails(cur_client_addr,cur_connection_socket);
 
-            client_msg_len = recvfrom(server_UDP_socket, (char *)client_msg, MAX_BUFFER_SIZE, MSG_WAITALL, (socketAddressPtr) &client_UDP_addr, &client_UDP_addr_len); 
-            client_msg[client_msg_len] = '\0'; 
-            printf("UDP msg : %s\nfrom", client_msg); 
-            printClientDetails(cur_client_addr,cur_connection_socket);
+                /*UDP PORT created succesfully on server, send port number to client and close TCP connection*/
+                message.type=2;
+                message.len = strlen(UDP_PORT_str);
+                strcpy(message.msg, UDP_PORT_str);
+                send(cur_connection_socket , &message , sizeof(message) , 0 ); 
 
-            char server_reply[MAX_BUFFER_SIZE];
-            printf("Please input msg response for");
-            printClientDetails(cur_client_addr,cur_connection_socket);
 
-            scanf("%s",server_reply);
+                // printf("Message type %d:\t UDP PORT number %d sent to Client:", message.type, UDP_PORT); 
+                printDetails(cur_client_addr,cur_connection_socket,UDP,&message,SENT,ACTIVE);
+                printf("\n\n");
+                close(cur_connection_socket); //CLose TCP connection
+                printf("------------- TCP connection closed ------------\n");
 
-            sendto(server_UDP_socket, (const char *)server_reply, strlen(server_reply), MSG_CONFIRM, (socketAddressPtr) &client_UDP_addr, client_UDP_addr_len); 
-            printf("Server reply sent to");
-            printClientDetails(cur_client_addr,cur_connection_socket);
+                socketAddress client_UDP_addr;
+                memset(&client_UDP_addr, 0, sizeof(client_UDP_addr)); 
+
+                int client_UDP_addr_len = sizeof(client_UDP_addr);  
+            
+                int client_msg_len;   
+
+                client_msg_len = recvfrom(server_UDP_socket, &message, sizeof(message) , MSG_WAITALL, (socketAddressPtr) &client_UDP_addr, &client_UDP_addr_len); 
+                message.msg[message.len] = '\0'; 
+                // printf("Message type %d:\n UDP message received: %s\nfrom Client:", message.type, message.msg); 
+                printDetails(cur_client_addr,cur_connection_socket,UDP,&message,RECEIVED,ACTIVE);
+
+                char server_reply[MAX_BUFFER_SIZE] = "Message_received_successfully\n";
+
+                scanf("%s",server_reply);
+                //send Message type 4 to client
+                message.type=4;
+                message.len = strlen(server_reply);
+                strcpy(message.msg, server_reply);
+                sendto(server_UDP_socket, &message, sizeof(message) , MSG_CONFIRM, (socketAddressPtr) &client_UDP_addr, client_UDP_addr_len); 
+                // printf("Message type %d:\nServer reply sent to", message.type);
+                printDetails(cur_client_addr,cur_connection_socket,UDP,&message,SENT,ACTIVE);
+            }
         }
-    }
 
-    close(server_UDP_socket);
-    
+
+        close(server_UDP_socket);
+        freePorts[UDP_PORT - basePort] = true;
+        printf("------------- UDP socket closed ------------\n");
+    }
+    freePorts[UDP_PORT - basePort] = true;
     return 0;
 } 
