@@ -59,11 +59,11 @@ void printfError(char* msg)
 
 void printDetails(socketAddress client_TCP_addr, int connection_socket_desc, int pro, Message message, int msg_stat, int stat)
 {
-    char curProtocol[5];
+    char curProtocol[5] = "---";
     char conStatus[10];
 
     if(pro == TCP) strcpy(curProtocol,"TCP");
-    else strcpy(curProtocol,"UDP");
+    else if(pro == UDP) strcpy(curProtocol,"UDP");
 
     if(stat == ACTIVE) strcpy(conStatus,"ACTIVE");
     else strcpy(conStatus,"CLOSED");
@@ -73,9 +73,7 @@ void printDetails(socketAddress client_TCP_addr, int connection_socket_desc, int
     if(msg_stat == SENT) strcpy(msgStatus,"SENT    ");
     else if(msg_stat == RECEIVED) strcpy(msgStatus,"RECEIVED");
 
-    if(message.type == -1) strcpy(colon,"");
-
-    printf("  %s   %s\t  %d\t    %d\t\t %s\t%s %d%s %s\n",  
+    printf("  %s   %s\t  %d\t     %d\t\t %s\t%s\t%d%s %s\n",  
         conStatus,
         inet_ntoa(client_TCP_addr.sin_addr) , 
         ntohs(client_TCP_addr.sin_port),
@@ -88,7 +86,7 @@ void printDetails(socketAddress client_TCP_addr, int connection_socket_desc, int
     );
     
 }
- Message emptyMessage;
+ Message newConnection, terminate;
 
 //the thread function
 void *connection_handler(void* );
@@ -101,10 +99,13 @@ int main(int argc , char *argv[])
 
     //intialize empty msg
 
-    emptyMessage.type = -1;
-    strcpy(emptyMessage.msg,"------");
-    emptyMessage.len = 0;
+    newConnection.type = 0;
+    strcpy(newConnection.msg,"New Connection");
+    newConnection.len = 0;
 
+    terminate.type = 0;
+    strcpy(terminate.msg,"Connection Terminated");
+    terminate.len = 0;
     if(argc!=2)
     {
         printError("Use command ./server <server port number>");
@@ -160,7 +161,7 @@ int main(int argc , char *argv[])
             client_TCP_addr,
             connection_socket,
             TCP,
-            emptyMessage,
+            newConnection,
             NONE,
             ACTIVE
         ); 
@@ -259,7 +260,8 @@ void *connection_handler(void* cur_client)
 
                 // printf("Message type %d:\t UDP PORT number %d sent to Client:", message.type, UDP_PORT); 
                 printDetails(cur_client_addr,cur_connection_socket,UDP,message,SENT,ACTIVE);
-                printf("\n\n");
+                // printf("\n\n");
+                printDetails(cur_client_addr,cur_connection_socket,TCP,terminate,NONE,CLOSED);
                 close(cur_connection_socket); //CLose TCP connection
                 // printf("------------- TCP connection closed ------------\n");
 
@@ -275,9 +277,9 @@ void *connection_handler(void* cur_client)
                 // printf("Message type %d:\n UDP message received: %s\nfrom Client:", message.type, message.msg); 
                 printDetails(cur_client_addr,cur_connection_socket,UDP,message,RECEIVED,ACTIVE);
 
-                char server_reply[MAX_BUFFER_SIZE] = "Message_received_successfully\n";
+                char server_reply[MAX_BUFFER_SIZE] = "Message received successfully";
 
-                scanf("%s",server_reply);
+                // scanf("%s",server_reply);
                 //send Message type 4 to client
                 message.type=4;
                 message.len = strlen(server_reply);
@@ -288,11 +290,11 @@ void *connection_handler(void* cur_client)
             }
         }
 
-
         close(server_UDP_socket);
         freePorts[UDP_PORT - basePort] = true;
         // printf("------------- UDP socket closed ------------\n");
     }
+    printDetails(cur_client_addr,cur_connection_socket,UDP,terminate,NONE,CLOSED);
     freePorts[UDP_PORT - basePort] = true;
     return 0;
 } 
