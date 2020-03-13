@@ -3,5 +3,5 @@
 all: a.out
 
 a.out: ../client.c ../server.c
-	gcc ../client.c -o client
-	gcc ../server.c -lpthread -o server
+	gcc ../client.c -g -o client
+	gcc ../server.c -g -lpthread -o server
