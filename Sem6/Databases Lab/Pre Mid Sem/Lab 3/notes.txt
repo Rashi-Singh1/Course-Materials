@@ -1,0 +1,68 @@
+create table Schedule(sched_id int primary key, day varchar(10) not null, start int not null, end int not null, unique(day,start,end));
+
+create table dept(dept_id int primary key, dept_name varchar(20));
+
+create table prof(prof_id int primary key, dept_id int not null, foreign key(dept_id) references dept(dept_id), prof_name varchar(20), sex varchar(10));
+
+create table depd(age int, dep_name varchar(20) not null, prof_id int not null, foreign key(prof_id) references prof(prof_id), primary key(age,dep_name,prof_id));
+
+create table stud(stud_id int primary key, stud_name varchar(20), dept_id int not null, foreign key(dept_id) references dept(dept_id));
+
+create table course(course_id int primary key, intake int, course_name varchar(20), course_type varchar(10), room varchar(10), dept_id int not null, foreign key(dept_id) references dept(dept_id), since year);
+
+create table scheduled_on(sched_id int not null, course_id int not null, primary key(sched_id,course_id), foreign key(course_id) references course(course_id), foreign key(sched_id) references Schedule(sched_id));
+
+create table teaches (prof_id int, course_id int, primary key(prof_id,course_id), foreign key(prof_id) references prof(prof_id), foreign key(course_id) references course(course_id));
+
+create table attends(grade int, stud_id int, foreign key(stud_id) references stud(stud_id), course_id int, foreign key(course_id) references course(course_id), primary key(stud_id, course_id,grade));
+
+create table research(area varchar(20), prof_id int, primary key(prof_id,area), foreign key(prof_id) references prof(prof_id));
+
+## 	To see doubts about sum across and stuff
+##	https://www.plus2net.com/sql_tutorial/sql_sum-multiple.php
+
+## 	To see doubts LIKE keyword
+##	https://www.techonthenet.com/mysql/like.php
+
+1)	select dept_id, count(prof_id) from prof group by dept_id;
+
+2)	select course_id from course where intake in (select max(intake) from course);
+
+3)	select dept_id, count(prof_id) from prof group by dept_id order by dept_id desc, count(prof_id) desc;
+
+//before studying JOINS : 
+
+4)	select day,count(distinct course_id) from Schedule,scheduled_on where Schedule.sched_id = scheduled_on.sched_id group by day;
+
+//Using INNER JOIN
+
+select day,count(distinct course_id) as "No of courses" from Schedule as x JOIN scheduled_on as y ON x.sched_id = y.sched_id group by day;
+
+5)	select stud_id,sum(grade)/count(course_id) as avg_cpi from attends group by stud_id;
+
+6)	select dept_name from dept INNER JOIN course ON dept.dept_id = course.dept_id where room = "L1" or room = "L2" or room = "L3";
+
+	//better way
+	select dept_name from dept INNER JOIN (select * from course where room = "L1" or room = "L2" or room = "L3") as course ON dept.dept_id = course.dept_id;
+
+	//better still
+	//assuming ON cond is applied later
+	//here ON still necessary as it would stilll give result as a cartesian product
+
+	select dept_name from dept INNER JOIN (select * from course where room = "L1" or room = "L2" or room = "L3" and dept_id in (select dept_id from dept)) as course ON dept.dept_id = course.dept_id;
+
+7)	select prof_name from prof INNER JOIN (select * from dept where dept_name = "CSE") as dept on prof.dept_id = dept.dept_id;
+
+
+//choosing items inside to show
+//only prof_id and course_name needed
+
+8)	select prof_name from prof INNER JOIN (select prof_id,teaches.course_id,course_name from teaches INNER JOIN course on teaches.course_id = course.course_id) as x ON prof.prof_id = x.prof_id where course_name = "CS101";
+
+	//better way : 
+	select prof_name from prof INNER JOIN (select prof_id from teaches INNER JOIN (select course_id from course where course_name = "CS101") as course on teaches.course_id = course.course_id) as x ON prof.prof_id = x.prof_id;
+
+
+//remember to work the way thru the innermost subclause
+
+9)	select dept_name from dept INNER JOIN (select distinct dept_id from course INNER JOIN (select distinct course_id from scheduled_on INNER JOIN (select * from Schedule where start = 9 and end = 10) as x on x.sched_id = scheduled_on.sched_id) as y on course.course_id = y.course_id) as z on dept.dept_id = z.dept_id;

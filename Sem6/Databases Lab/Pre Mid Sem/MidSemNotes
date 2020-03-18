@@ -1,0 +1,3 @@
+create database name;
+use name;
+create table (id int );

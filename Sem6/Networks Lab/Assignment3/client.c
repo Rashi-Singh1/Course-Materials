@@ -99,7 +99,7 @@ int main(int argc, char const *argv[])
     int server_UDP_addr_len = sizeof(server_UDP_addr); 
     char client_msg[MAX_BUFFER_SIZE];   
     printf("Please input msg to the server\n");
-    scanf("%s",client_msg);
+    gets(client_msg);
 
     /*Sending Message type 3 to Server using UDP*/
     message.type = 3;
