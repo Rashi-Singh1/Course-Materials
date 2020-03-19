@@ -25,19 +25,19 @@ public:
     int count;
     node* head;
     list();
-    bool safe_to_insert(){
-        return this->count < BUCKET_SIZE;
-    }
+    bool safe_to_insert();    
     void insert(int key);                       //simply adds if possible else ignores
     void insert_node(node* new_node);
     node* search(int key);
     void remove(node* prev, node* cur);         //same as delete but do not free space
     void print();
-    void clear(){
-
-    }
+    void clear(){}
     list* copy_list();
 };
+
+bool list::safe_to_insert(){
+    return this->count < BUCKET_SIZE;
+}
 
 list::list(){
     this->local_depth = 1;
@@ -114,34 +114,25 @@ private:
     int global_depth;
     list** dir;
     string get_binary(int key);
-
-public:
-    Hash();
     int hash_func(int key);
-    void insert(int key);
-    node* search(int key);
-    void del(int key){}
     bool is_index_entry_null(int index);
-    void clear(){}
-    void print();
-    void double_dir();
+    int get_local_depth(int index);
     int get_index_type_0(int index);
     int get_index_type_1(int index);
     int get_dir_size();
-    list* split_list(int base, int local_depth);
-    void redistribute_data(list* type1, list* type2, int base, int local_depth);
+    void double_dir();
+    list* split_list(int index);
+    void redistribute_data(list* type1, list* type2, int index);
+public:
+    Hash();
+    void insert(int key);
+    node* search(int key);
+    void del(int key){}
+    void clear(){}
+    void print();
 };
 
-Hash::Hash(){
-    this->global_depth = 1;
-    this->dir = new list*[2];                 //actually size of list is pow(2,global_depth)
-    for (int i = 0; i < 2; i++)
-    {
-        this->dir[i] = NULL;
-    }
-    
-}
-
+//PRIVATE FUNCTIONS :
 int Hash::get_dir_size(){
     return pow(2,this->global_depth);
 }
@@ -167,11 +158,18 @@ bool Hash::is_index_entry_null(int index){
 }
 
 //this local_depth is before splitting
-list* Hash::split_list(int base, int local_depth){
-    if(this->is_index_entry_null(base)) return NULL;
-    int index1 = base;
-    int index2 = pow(2,local_depth) + base;
-    int divide = pow(2,local_depth + 1);
+/*
+    Logic : 
+    If i have 000 and 100 (i.e. local depth = 2) pointing to same list
+    then base : 00 and index1 : 000 and index2 : 100 and divide : 1000
+    therefore for all indices in the table, whenever we get last three bits as index2 (100), point it to an empty list
+    To check the last three bits, take mod wrt divide
+*/
+list* Hash::split_list(int index){
+    if(this->is_index_entry_null(index)) return NULL;
+    int index1 = this->get_index_type_0(index);
+    int index2 = this->get_index_type_1(index);
+    int divide = pow(2,this->get_local_depth(index) + 1);
     list* new_list = new list();
     for(int i = 0;i < this->get_dir_size();i++){
         if(i % divide == index2) this->dir[i] = new_list;
@@ -180,25 +178,85 @@ list* Hash::split_list(int base, int local_depth){
 }
 
 //this local_depth is after splitting (i.e. 1 + past value) 
-void Hash::redistribute_data(list* type1, list* type2, int base, int local_depth){
+/*
+    Logic : 
+    If i have 000 and 100 (i.e. local depth = 2) pointing to same list
+    then base : 00 and index1 : 000 and index2 : 100 and divide : 1000
+    i have type2 as the empty list to which the indices ending with index2 point
+    now just check, if for the current key, we get the index as index2, then move it to type2 list
+*/
+void Hash::redistribute_data(list* type1, list* type2, int index){
     if(type1 == NULL || type2 == NULL) return;
-    int index1 = base;
-    int index2 = pow(2,local_depth - 1) + base;
-    int divide = pow(2,local_depth);
+    int index1 = this->get_index_type_0(index);
+    int index2 = this->get_index_type_1(index);
+    int divide = pow(2,this->get_local_depth(index) + 1);
     cout<<"in redistribution num1 : "<<index1<<" num2 : "<<index2<<endl;
     node* cur = type1->head;
     node* prev = NULL;
     node* next = cur == NULL ? NULL : cur->next;
     while(cur){
-        if(cur->data % divide == index2) {
+        if(cur->data % divide == index2) {                                  //checking which list it belongs to
             type1->remove(prev,cur);
             cur->next = NULL;
             type2->insert_node(cur);
         }
         prev = cur;
         cur = next;
-        next = cur == NULL ? NULL : cur->next; 
+        next = cur == NULL ? NULL : cur->next;                              //this is needed, bcs we are reusing nodes, so there next is changing, so cant use cur = cur->next
     }
+}
+
+int Hash::get_local_depth(int index){
+    return this->is_index_entry_null(index) ? 0 : this->dir[index]->local_depth;
+}
+
+//both these functions assume dir is not split yet
+//this gives the base, i.e the value of the local_depth no of bits from end(of this index)
+//ex for 100 and local_depth 2, it will 00
+int Hash::get_index_type_0(int index){
+    return index % (int)pow(2, this->get_local_depth(index));
+}
+
+//this gives the 1_index type entry
+//for the above example, it will 100 type entry
+int Hash::get_index_type_1(int index){
+    return pow(2,this->get_local_depth(index)) + this->get_index_type_0(index);
+}
+
+/*
+    Logic : once doubled, to map the entries do - 
+    if in old table some entry is NULL, in new table 0_old_entry ans 1_old_entry both would be NULL
+    if not NULL, then 0_old_entry and 1_old_entry both would point to the old entry
+*/
+void Hash::double_dir(){
+    int old_size = this->get_dir_size();
+    list** new_dir = new list* [(int)pow(2,this->global_depth + 1)];
+    for(int i = 0; i < old_size;i++)
+    {
+        int index0 = i;
+        int index1 = index0 + old_size;                                     //index of 1_old_entry
+        if(!(this->is_index_entry_null(i))){                                //if invalid do nothing bcs 1.... and 0.... already NULL in new_dir
+            new_dir[index0] = new_dir[index1] = this->dir[i];
+        }
+        else{
+            new_dir[index0] = NULL;
+            new_dir[index1] = NULL;
+        }
+    }
+    (this->global_depth)++;
+    free(this->dir);                                                        //free the space of dir
+    this->dir = new_dir;                                                  
+}
+
+//PUBLIC FUNCTIONS : 
+Hash::Hash(){
+    this->global_depth = 1;
+    this->dir = new list*[2];                 //actually size of list is pow(2,global_depth)
+    for (int i = 0; i < 2; i++)
+    {
+        this->dir[i] = NULL;
+    }
+    
 }
 
 void Hash::insert(int key){
@@ -225,15 +283,14 @@ void Hash::insert(int key){
             cout<<"Entering splitting case\n";       
             list* type1 = this->dir[index];
             list* type2 = NULL;
-            int base = index % (int)pow(2, type1->local_depth);
-            type2 = this->split_list(base, type1->local_depth);
+            type2 = this->split_list(index);
             this->print();
             if(type2 == NULL) cout<<"Error : new list is NULL\n";
             else{
+                cout<<"Performing redistribution\n";
+                this->redistribute_data(type1, type2, index);
                 (type1->local_depth)++;
                 type2->local_depth = type1->local_depth;
-                cout<<"Performing redistribution\n";
-                this->redistribute_data(type1, type2, base, type1->local_depth);
                 this->print();
                 this->insert(key);
             }
@@ -256,35 +313,6 @@ node* Hash::search(int key){
         return this->dir[index]->search(key);
     }
     return NULL;
-}
-
-//both these functions assume dir is not doubled yet
-int Hash::get_index_type_0(int index){
-    return index > this->get_dir_size() ?  index - this->get_dir_size()  : index;
-}
-
-int Hash::get_index_type_1(int index){
-    return index < this->get_dir_size() ? this->get_dir_size() + index : index;
-}
-
-void Hash::double_dir(){
-    int old_size = this->get_dir_size();
-    list** new_dir = new list* [(int)pow(2,this->global_depth + 1)];
-    for(int i = 0; i < old_size;i++)
-    {
-        int index0 = i;
-        int index1 = this->get_index_type_1(i);
-        if(!(this->is_index_entry_null(i))){                                //if invalid do nothing bcs 1.... and 0.... already NULL in new_dir
-            new_dir[index0] = new_dir[index1] = this->dir[i];
-        }
-        else{
-            new_dir[index0] = NULL;
-            new_dir[index1] = NULL;
-        }
-    }
-    (this->global_depth)++;
-    this->clear();                                                          //free the space of dir
-    this->dir = new_dir;                                                  
 }
 
 void Hash::print(){
