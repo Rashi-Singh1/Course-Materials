@@ -29,10 +29,12 @@ public:
     void insert(int key);                       //simply adds if possible else ignores
     void insert_node(node* new_node);
     node* search(int key);
+    void del(int key);
     void remove(node* prev, node* cur);         //same as delete but do not free space
     void print();
     void clear(){}
     list* copy_list();
+    void insert_node_anyway(node* new_node);
 };
 
 bool list::safe_to_insert(){
@@ -62,6 +64,13 @@ void list::insert_node(node* new_node){
     }
 }
 
+void list::insert_node_anyway(node* new_node){
+    if(this->head) new_node->next = this->head;
+    this->head = new_node;
+    (this->count)++;
+}
+
+
 node* list::search(int key){
     node* cur = this->head;
     while(cur){
@@ -69,6 +78,22 @@ node* list::search(int key){
         cur = cur->next;
     }
     return NULL;
+}
+
+void list::del(int key){
+    node* cur = this->head;
+    node* prev = NULL;
+    while(cur){
+        if(cur->data == key){
+            if(prev) prev->next = cur->next;
+            else this->head = cur->next;
+            (this->count)--;
+            free(cur);
+            break;
+        }
+        prev = cur;
+        cur = cur->next;
+    }
 }
 
 void list::remove(node* prev, node* cur){       //same as delete but do not free space
@@ -119,15 +144,19 @@ private:
     int get_local_depth(int index);
     int get_index_type_0(int index);
     int get_index_type_1(int index);
+    int get_count(int index);
     int get_dir_size();
     void double_dir();
     list* split_list(int index);
     void redistribute_data(list* type1, list* type2, int index);
+    void combine_list(int index1, int index2, int key);
+    void half_dir();
 public:
     Hash();
     void insert(int key);
     node* search(int key);
-    void del(int key){}
+    void del_without_compaction(int key);
+    void del_with_compaction(int key);
     void clear(){}
     void print();
 };
@@ -135,6 +164,10 @@ public:
 //PRIVATE FUNCTIONS :
 int Hash::get_dir_size(){
     return pow(2,this->global_depth);
+}
+
+int Hash::get_count(int index){
+    return this->is_index_entry_null(index) ? 0 : this->dir[index]->count;
 }
 
 string Hash::get_binary(int key){
@@ -190,7 +223,7 @@ void Hash::redistribute_data(list* type1, list* type2, int index){
     int index1 = this->get_index_type_0(index);
     int index2 = this->get_index_type_1(index);
     int divide = pow(2,this->get_local_depth(index) + 1);
-    cout<<"in redistribution num1 : "<<index1<<" num2 : "<<index2<<endl;
+    // cout<<"in redistribution num1 : "<<index1<<" num2 : "<<index2<<endl;
     node* cur = type1->head;
     node* prev = NULL;
     node* next = cur == NULL ? NULL : cur->next;
@@ -248,13 +281,66 @@ void Hash::double_dir(){
     this->dir = new_dir;                                                  
 }
 
+void Hash::combine_list(int index1, int index2, int key){
+    // cout<<"Entering combine list"<<endl;
+    if(this->is_index_entry_null(index1) || this->is_index_entry_null(index2)) return;
+    node* cur = this->dir[index2]->head;
+    node* next = cur == NULL ? NULL : cur->next;
+    int final_local_depth = max(0,max(this->get_local_depth(index1), this->get_local_depth(index2)) - 1);
+    int final_count = this->get_count(index1) + this->get_count(index2);
+    while(cur){
+        // cout<<"cur : "<<cur->data<<endl;
+        // cout<<"next : "; next == NULL ? cout<<"NULL"<<endl<<endl : cout<<next->data<<endl<<endl;
+        cur->next = NULL;
+        this->dir[index1]->insert_node_anyway(cur);
+        cur = next;
+        next = cur == NULL ? NULL : cur->next;
+    }
+    free(this->dir[index2]);    
+    this->dir[index2] = this->dir[index1];
+    (this->dir[index1]->local_depth) = final_local_depth;
+    this->dir[index1]->count = final_count;
+    // this->print();
+}
+
+void Hash::half_dir(){
+    // cout<<"Entering half_dir vali redistribution"<<endl;
+    int half_point = pow(2, this->global_depth - 1);
+
+    //redistribution
+    for(int i = half_point ; i < this->get_dir_size() ; i++){
+        if(this->is_index_entry_null(i)) this->dir[i] = this->dir[i-half_point];
+        else{
+            if(this->is_index_entry_null(i-half_point)) this->dir[i-half_point];
+            else{
+                if(this->dir[i] != this->dir[i-half_point]) cout<<"Both are not equal vala case\n";         //check if this is ever possible and do we need to combine_lists then....if possible
+                else continue;
+            }
+        }
+    }
+    // this->print();
+    // cout<<"Entering half_dir vali resize"<<endl;
+    //resize the directory now
+    int old_size = this->get_dir_size();
+    int new_size = old_size / 2;
+    list** new_dir = new list* [new_size];
+    for(int i = 0; i < new_size;i++)
+    {
+        new_dir[i] = this->dir[i];
+    }
+    (this->global_depth)--;
+    free(this->dir);                                                        //free the space of dir
+    this->dir = new_dir;   
+    // this->print();
+}
+
 //PUBLIC FUNCTIONS : 
 Hash::Hash(){
     this->global_depth = 1;
     this->dir = new list*[2];                 //actually size of list is pow(2,global_depth)
     for (int i = 0; i < 2; i++)
     {
-        this->dir[i] = NULL;
+        this->dir[i] = new list();
     }
     
 }
@@ -264,14 +350,14 @@ void Hash::insert(int key){
 
     //case 1 : not initialized 
     if(this->is_index_entry_null(index)){
-        cout<<"Entering initialize and insert case\n";
+        // cout<<"Entering initialize and insert case\n";
         this->dir[index] = new list();
         this->dir[index]->insert(key);
     }
 
     //case 2 : no splitting
     else if(this->dir[index]->safe_to_insert()){
-        cout<<"Entering safe to insert case\n";
+        // cout<<"Entering safe to insert case\n";
         this->dir[index]->insert(key);
     }
 
@@ -280,27 +366,27 @@ void Hash::insert(int key){
 
         //case 3 : split the cur list into two parts and redistribute data
         if(local_depth < this->global_depth){   
-            cout<<"Entering splitting case\n";       
+            // cout<<"Entering splitting case\n";       
             list* type1 = this->dir[index];
             list* type2 = NULL;
             type2 = this->split_list(index);
-            this->print();
+            // this->print();
             if(type2 == NULL) cout<<"Error : new list is NULL\n";
             else{
-                cout<<"Performing redistribution\n";
+                // cout<<"Performing redistribution\n";
                 this->redistribute_data(type1, type2, index);
                 (type1->local_depth)++;
                 type2->local_depth = type1->local_depth;
-                this->print();
+                // this->print();
                 this->insert(key);
             }
         }
 
         //case 4 : double the dir size
         else{       
-            cout<<"Entering doubling the dir case\n";
+            // cout<<"Entering doubling the dir case\n";
             this->double_dir();
-            this->print();
+            // this->print();
             this->insert(key);
         }
     }
@@ -315,15 +401,68 @@ node* Hash::search(int key){
     return NULL;
 }
 
+void Hash::del_without_compaction(int key){
+    int index = hash_func(key);
+    if(this->search(key) == NULL) return;
+    if(!(this->is_index_entry_null(index))) {
+        this->dir[index]->del(key);
+    }
+}
+
+void Hash::del_with_compaction(int key){
+    int index = this->hash_func(key);
+    if(this->search(key) == NULL) return;
+    if(!(this->is_index_entry_null(index))){
+
+        int lower_base = index % (int)pow(2,this->get_local_depth(index) - 1);
+        int index1 = lower_base;
+        int index2 = lower_base + pow(2,this->get_local_depth(index) - 1);
+
+        //case 1a : delete without compaction
+        if(this->global_depth < 2 || this->is_index_entry_null(index1) || this->is_index_entry_null(index2)) {
+            // cout<<"Enteing case 1a"<<endl;
+            this->del_without_compaction(key);
+        }
+
+        //case 2 : delete with compaction
+        else if(this->dir[index1] != this->dir[index2] && this->get_local_depth(index1) == this->get_local_depth(index2)){
+            // cout<<"Entering del with compaction case"<<endl;
+            if((this->get_count(index1) + this->get_count(index2) - 1) <= BUCKET_SIZE){
+                this->combine_list(index1, index2, key);
+
+                //check if dir needs to be halved
+                bool half_directory = true;
+                for (int i = 0; i < this->get_dir_size(); i++)
+                {
+                    if(this->get_local_depth(i) >= this->global_depth) {
+                        half_directory = false;
+                        break;
+                    }
+                }
+                if(half_directory) this->half_dir();
+                this->del_with_compaction(key);
+            }
+            else this->del_without_compaction(key);  
+        }
+
+        //case 1b : delete without compaction
+        else {
+            // cout<<"Enteing case 1a"<<endl;
+            this->del_without_compaction(key); 
+        }
+    }
+}
+
 void Hash::print(){
     cout<<"d:"<<this->global_depth<<endl;
     for( int i = 0; i < this->get_dir_size() ; i++)
     {
-        cout<<this->get_binary(i)<<"     (d:";
-        this->is_index_entry_null(i) ? cout<<"0)" : cout<<this->dir[i]->local_depth<<") : ";
+        cout<<i<<" "<<this->get_binary(i)<<"     (d:";
+        this->is_index_entry_null(i) ? cout<<"0, c:0, b: )" : cout<<this->get_local_depth(i)<<", c:"<<this->dir[i]->count<<",  b:"<<this->get_index_type_0(i)<<") : ";
         if(!(this->is_index_entry_null(i))) this->dir[i]->print();
         cout<<endl;
     }
+    cout<<endl;
 } 
 
 int main(int argc, char const *argv[])
@@ -347,12 +486,15 @@ int main(int argc, char const *argv[])
             hash.print();
             break;
         case 'd' :
-            hash.del(temp);
+            hash.del_with_compaction(temp);
             hash.print();
             break;
         case 's' :
 
             cout<<"Search result for "<<temp<<" : "; hash.search(temp) != NULL ? cout<<(hash.search(temp))->data<<endl : cout<<"NULL"<<endl;
+            break;
+        case 'p' :
+            hash.print();
             break;
         default:
             break;

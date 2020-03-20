@@ -46,13 +46,13 @@ class List{
                 if(cur->data == key){
                     if(prev) prev->next = cur->next;
                     else this->head = cur->next;
+                    (this->count)--;
                     free(cur);
                     break;
                 }
                 prev = cur;
                 cur = cur->next;
             }
-            (this->count)--;
         }
 
         void print(){
