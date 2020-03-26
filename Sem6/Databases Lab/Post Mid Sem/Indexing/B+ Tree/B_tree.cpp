@@ -16,9 +16,9 @@ public:
     node* parent;
     int key_count;
     int child_count;
-    bool is_leaf();
 
     node();
+    bool is_leaf();
     int get_ith_key(int i);
     node* get_ith_child(int i);
     void insert(int data, node* children, node** root);
@@ -143,21 +143,16 @@ node* node::split(){
 void node::insert(int data, node* children, node** root){
 
     //simply insert
-    //assuming children is the right child of place where it is to be inserted
-    if(this->key_count < MAX_KEYS){
-        int index = this->find_index(data);
-        // cout<<"index : "<<index<<endl;
-        this->insert_at_index(true, (void*) &data, index);
-        this->insert_at_index(false, (void*) &children, index + 1);
-    }
+    //assuming children is the right child of place where data is to be inserted
+    int index = this->find_index(data);
+    this->insert_at_index(true, (void*) &data, index);
+    this->insert_at_index(false, (void*) &children, index + 1);
 
     //split after adding
-    else{
-        int index = this->find_index(data);
-        this->insert_at_index(true, (void*) &data, index);
-        this->insert_at_index(false, (void*) &children, index + 1);
+    if(this->key_count > MAX_KEYS){
         int head_data = this->array[MIN_KEYS];
         node* new_node = this->split();
+        
         if(this->parent){
             this->parent->insert(head_data, new_node, root);
         }
@@ -165,6 +160,7 @@ void node::insert(int data, node* children, node** root){
             node* head_node = new node();
             *(root) = head_node;
 
+            //left child is set here
             head_node->children[0] = this;
             (head_node->child_count)++;
 
@@ -173,7 +169,6 @@ void node::insert(int data, node* children, node** root){
             new_node->parent = head_node;
 
             head_node->insert(head_data, new_node, root);
-            // cout<<"head_node now : "; head_node->print();
         }
     }
 }
@@ -182,10 +177,11 @@ class BTree{
 private:
     node* root;
     void insert_util(node* cur, int data);
-    void print_util(node* cur);
+    bool search_util(node* cur, int data);
 public:
     BTree();
     void insert(int data);
+    bool search(int data);
     void print();
 };
 
@@ -215,23 +211,26 @@ void BTree::insert_util(node* cur, int data){
     }
 }
 
+bool BTree::search(int data){
+    return this->search_util(this->root, data);
+}
+
+bool BTree::search_util(node* cur, int data){
+    if(cur != NULL){
+        if(data < cur->get_ith_key(0)) this->search_util(cur->get_ith_child(0), data);
+        for(int i = 0; i < cur->key_count; i++){
+            if(data == cur->get_ith_key(i)) return true;
+            this->search_util(cur->get_ith_child(i + 1), data);
+        }
+    }
+    return false;
+}
+
 void BTree::print(){
     if(this->root == NULL) return;
     this->root->print();
-    // this->print_util(this->root);
     cout<<endl;
 }
-
-void BTree::print_util(node* cur){
-    if(cur == NULL) return;
-    if(!(cur->is_leaf())) this->print_util(cur->get_ith_child(0)); 
-    for(int i = 0; i < cur->key_count; i++){
-        cout<<cur->get_ith_key(i)<<" ";
-        this->print_util(cur->get_ith_child(i+1));
-    }
-    // cur->print();
-}
-
 
 int main(int argc, char const *argv[])
 {
@@ -259,7 +258,7 @@ int main(int argc, char const *argv[])
             break;
         case 's' :
 
-            // cout<<"Search result for "<<temp<<" : "; tree.search(temp) != NULL ? cout<<(tree.search(temp))->data<<endl : cout<<"NULL"<<endl;
+            cout<<"Search result for "<<temp<<" : "<<tree.search(temp)<<endl; 
             break;
         case 'p' :
             tree.print();
