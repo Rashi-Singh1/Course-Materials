@@ -19,8 +19,11 @@ public:
 
     node();
     bool is_leaf();
-    int get_ith_key(int i);
     node* get_ith_child(int i);
+    int   get_ith_key(int i);
+    int   get_child_index();
+    void remove_at_index(int index);
+    void merge(int index);
     void insert(int data, node* children, node** root);
     void print();
 };
@@ -37,6 +40,17 @@ bool node::is_leaf(){
     return (this->child_count > 0 ? false : true);
 }
 
+//assuming this is called for leaves
+void node::remove_at_index(int index){
+    if(index >=0 && index < this->key_count){
+        for(int i = index; i < this->key_count - 1; i++){
+            int temp = this->get_ith_key(i+1);
+            this->array[i] = temp;
+        }
+        (this->key_count)--;
+    }
+}
+
 int node::get_ith_key(int i){
     if(i >= key_count) return -1;
     return this->array[i];
@@ -45,6 +59,14 @@ int node::get_ith_key(int i){
 node* node::get_ith_child(int i){
     if(this->is_leaf() || i > this->key_count) return NULL;
     return this->children[i];
+}
+
+int node::get_child_index(){
+    if(this->parent == NULL) return -1;
+    for(int i = 0; i<this->parent->child_count; i++){
+        if(this->parent->get_ith_child(i) == this) return i;
+    }
+    return -1;
 }
 
 void node::print(){
@@ -108,6 +130,39 @@ void node::insert_at_index(bool key, void* item, int index){
             }
             this->children[(this->child_count)++] = next_val;
         }
+    }
+}
+
+//if key count == 2, then make it cur, rather than making it a new merged child
+void node::merge(int index){
+    if(index >= 0 && index < this->key_count && this->child_count > 0){
+        node* child1 = this->get_ith_child(index);
+        node* child2 = this->get_ith_child(index + 1);
+        if(child2->key_count + child1->key_count + 1 > MAX_KEYS) return;
+        int new_ind = child1->key_count;
+        child1->array[new_ind++] = this->get_ith_key(index);
+        for(int i = 0; i < child2->key_count; i++){
+            child1->array[new_ind++] = child2->get_ith_key(i);
+        }
+        if(this->key_count == 1) {
+            free(this->array);
+            this->array = child1->array;
+            this->child_count = 0;
+            this->key_count = child1->key_count + child2->key_count + 1;
+        }
+        else{
+            this->remove_at_index(index);
+            child1->key_count = child1->key_count + child2->key_count + 1;
+            this->children[index] = child1;
+            node* temp;
+            if(index+1 < this->child_count - 1) temp = this->get_ith_child(index+2);
+            for(int i = index+1; i < this->child_count -1 ; i++){
+                temp = this->children[i+1];
+                this->children[i] = temp;
+            }
+            (this->child_count)--;
+        }
+        free(child2);
     }
 }
 
@@ -178,10 +233,12 @@ private:
     node* root;
     void insert_util(node* cur, int data);
     bool search_util(node* cur, int data);
+    void del_util(node* cur, int data);
 public:
     BTree();
     void insert(int data);
     bool search(int data);
+    void del(int data);
     void print();
 };
 
@@ -226,6 +283,127 @@ bool BTree::search_util(node* cur, int data){
     return false;
 }
 
+void BTree::del(int data){
+    this->del_util(this->root, data);
+}
+
+void BTree::del_util(node* cur, int data){
+    if(cur == NULL || cur->key_count == 0) return;
+    if(data < cur->get_ith_key(0)) {
+        cout<<"route to first child"<<endl;
+        this->del_util(cur->get_ith_child(0), data);
+    }
+    else if(data > cur->get_ith_key(cur->key_count - 1)){
+        cout<<"Route to last child"<<endl;
+        this->del_util(cur->get_ith_child(cur->child_count - 1),data);
+    }
+    else 
+        for(int i = 0 ; i < cur->key_count; i++){
+
+            //actual del
+            if(cur->get_ith_key(i) == data){
+                cout<<"key with data found"<<endl;
+
+                //case 1: leaf
+                if(cur->is_leaf()){
+
+                    //case 1: safe to remove
+                    if(cur->key_count > MIN_KEYS) {
+                        cout<<"Safe to remove from leaf"<<endl;
+                        cur->remove_at_index(i);
+                    }
+                    
+                    //case 2 : merge or borrow or free
+                    else{
+                        //case 2a : borrow or merge
+                        if(cur->parent){
+                            int child_index = cur->get_child_index();
+                            if(child_index == -1) cout<<"Error : child index not found\n";
+
+                            node *left_sibling = NULL, *right_sibling = NULL;
+                            if(child_index > 0){
+                                left_sibling = cur->parent->get_ith_child(child_index - 1);
+                            }
+                            if(child_index < ((cur->parent->child_count) - 1)){
+                                right_sibling = cur->parent->get_ith_child(child_index + 1);
+                            }
+                            if(left_sibling == NULL && right_sibling == NULL) cout<<"Error : only one child of parent\n";
+                            else{
+
+                                //borrow cases
+                                //borrow from left sibling
+                                if(left_sibling && left_sibling->key_count > MIN_KEYS){
+                                    cout<<"Borrow from left sibling"<<endl;
+                                    cur->remove_at_index(i);
+                                    cur->insert(cur->parent->get_ith_key(child_index - 1), 
+                                                NULL,
+                                                &(this->root));
+                                    cur->parent->array[child_index - 1] = left_sibling->get_ith_key(left_sibling->key_count - 1);
+                                    left_sibling->remove_at_index(left_sibling->key_count - 1);
+                                }
+
+                                //borrow from right sibling
+                                else if(right_sibling && right_sibling->key_count > MIN_KEYS){
+                                    cout<<"Borrow from right sibling"<<endl;
+                                    cur->remove_at_index(i);
+                                    cur->insert(cur->parent->get_ith_key(child_index), 
+                                                NULL,
+                                                &(this->root));
+                                    cur->parent->array[child_index] = right_sibling->get_ith_key(0);
+                                    right_sibling->remove_at_index(0);
+                                }
+
+                                //merge cases
+                                //left_sibling->key_count + (cur->key_count - 1) + 1(for the parent ka key)
+                                else if(left_sibling && (left_sibling->key_count + cur->key_count<= MAX_KEYS)){
+                                    cout<<"Merge with left sibling"<<endl;
+                                    cur->remove_at_index(i);
+                                    cur->parent->merge(child_index - 1);
+                                }
+
+                                //merge with right sibling
+                                else if(right_sibling && (right_sibling->key_count + cur->key_count<= MAX_KEYS)){
+                                    cout<<"Merge with right sibling"<<endl;
+                                    cur->remove_at_index(i);
+                                    cur->parent->merge(child_index);
+                                }
+                            }
+                        }
+
+                        //case 2b : means only root node, therefore simply del
+                        else {
+                            cout<<"safely remove from root"<<endl;
+                            cur->remove_at_index(i);
+                            if(cur->key_count == 0) {
+                                this->root == NULL;
+                                free(cur);
+                            }
+                        }
+                    }
+                }
+
+                //case 2: go to leaf
+                else{
+                    cout<<"Route to leaf"<<endl;
+                    if(cur->get_ith_child(i+1)->key_count > cur->get_ith_child(i)->key_count){
+                        cur->array[i] = cur->get_ith_child(i+1)->get_ith_key(0);
+                        this->del_util(cur->get_ith_child(i+1),cur->array[i]);
+                    }else{
+                        cur->array[i] = cur->get_ith_child(i)->get_ith_key(cur->get_ith_child(i)->key_count - 1);
+                        this->del_util(cur->get_ith_child(i),cur->array[i]);
+                    }
+                }
+            }
+
+            //ow route
+            else if(cur->get_ith_key(i) < data && data < cur->get_ith_key(i + 1)) {
+                cout<<"key not found, route"<<endl;
+                this->del_util(cur->get_ith_child(i+1), data);
+            }
+        }
+    
+}
+
 void BTree::print(){
     if(this->root == NULL) return;
     this->root->print();
@@ -253,7 +431,7 @@ int main(int argc, char const *argv[])
             tree.print();
             break;
         case 'd' :
-            // tree.del_with_compaction(temp);
+            tree.del(temp);
             tree.print();
             break;
         case 's' :
@@ -267,6 +445,5 @@ int main(int argc, char const *argv[])
             break;
         }
     }
-    
     return 0;
 }
