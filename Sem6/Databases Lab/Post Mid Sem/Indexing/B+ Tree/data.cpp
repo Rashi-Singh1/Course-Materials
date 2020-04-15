@@ -1,4 +1,6 @@
-#include "B_Tree.h"
+#include <iostream>
+#include <bits/stdc++.h>
+#include "B_tree.h"
 using namespace std;
 #define T 2
 #define D 2
@@ -72,12 +74,12 @@ void data::insert(int value, BTree** tree){
             int head_data = this->get_ith_key(this->key_count - 1);
             head_data+=this->next->get_ith_key(0) + 1;
             head_data/=2;
-            if(this->parent) this->parent->set_data_child(head_data, this);
+            if(this->parent) {
+                this->parent->set_data_child(head_data, this->next);
+            }
             else{
                 (*tree) = new BTree();
                 (*tree)->insert(head_data);
-
-                //later use root ka function insert_data_child, when index finalized for that function
                 (*tree)->insert_data_child(this, 0);
                 (*tree)->insert_data_child(this->next, 1);
                 this->parent = (*tree)->root;

@@ -1,3 +1,7 @@
+#include <iostream>
+#include <bits/stdc++.h>
+#include "node.h"
+using namespace std;
 #define T 2
 #define D 2
 #define MAX_KEYS (2*T-1)
@@ -30,7 +34,7 @@ node* node::get_ith_child(int i){
 }
 
 data* node::get_ith_data_child(int i){
-    if(!this->is_leaf() || i >= this->child_count || i < 0) return NULL;
+    if(!this->is_leaf() || i >= this->data_child_count || i < 0) return NULL;
     return this->data_children[i];
 }
 
@@ -39,7 +43,8 @@ void node::set_data_child(int head_data, data* child){
     if(this->key_count < MAX_KEYS){
         int index = this->find_index(head_data);
         this->insert_at_index(true,false,(void*) &head_data,index);
-        this->insert_at_index(false,false,(void*) &child, index);           //confirm this index
+        this->insert_at_index(false,true,(void*) &child, index+1);   
+        child->parent = this;        
     }
 }
 

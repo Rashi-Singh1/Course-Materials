@@ -1,3 +1,5 @@
+#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 #include "B_tree.h"
 #define T 2
@@ -13,7 +15,7 @@ BTree::BTree(){
 
 //requires root NON NULL
 void BTree::insert_data_child(data* child, int index){
-    if(this->root != NULL) this->root->insert_at_index(false,true,(void*) child, index);
+    if(this->root != NULL) this->root->insert_at_index(false,true,(void*) &child, index);
 }
 
 void BTree::insert(int data){
