@@ -6,7 +6,6 @@
 class node{
 private:
     node*   split();
-    int     find_index(int data);
 public:
     int*    array;
     node*   parent;
@@ -17,6 +16,7 @@ public:
     int     data_child_count;
     node();
     bool    is_leaf();
+    int     find_index(int data);
     int     get_ith_key(int i);
     node*   get_ith_child(int i);
     data*   get_ith_data_child(int i);

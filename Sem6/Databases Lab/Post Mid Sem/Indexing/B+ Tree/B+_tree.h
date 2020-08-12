@@ -8,8 +8,10 @@ private:
     data*  start;
 public:
     BPTree();
-    void insert(int value);
-    void print();
+    void  insert(int value);
+    void  del   (int value){}
+    bool  search(int value);
+    void  print ();
 };
 
 #endif // BP_TREE_H

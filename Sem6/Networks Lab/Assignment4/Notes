@@ -1,0 +1,19 @@
+Using NS-3 : 
+    Features : 
+        ○ NetAnim
+        ○ Visualizer
+        ○ WireShark
+        ○ TraceMetrics
+        ○ FlowMetrics
+
+    Conceptual Abstractions : 
+        ○ Node              - A more general term used for host/end-system (Computing devices connected to the network)
+                              Node class is used to represent this
+                              Think of it as a compputer to which we'll add functionalities like applications, protocol stacks, peripheral cards with their associated drivers etc
+       
+        ○ Application       - 
+        ○ Channel
+        ○ Net Device
+        ○ Topology Helpers
+
+

@@ -18,6 +18,7 @@ public:
     data();
     void insert(int value, BTree** tree);
     int  get_ith_key(int i);
+    bool search(int value);
     void print();
 };
 

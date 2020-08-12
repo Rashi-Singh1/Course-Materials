@@ -89,6 +89,18 @@ void data::insert(int value, BTree** tree){
     }
 }
 
+bool data::search(int value){
+    int start = 0;
+    int end = this->key_count - 1;
+    while(start <= end){
+        int mid = (start + end)/2;
+        if(this->get_ith_key(mid) == value) return true;
+        else if(this->get_ith_key(mid) > value) end = mid - 1;
+        else start = mid + 1;
+    }
+    return false;
+}
+
 void data::print(){
     for(int i = 0 ; i < this->key_count; i++) cout<<this->array[i]<<" ";
     cout<<" -> ";

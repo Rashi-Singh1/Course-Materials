@@ -36,6 +36,22 @@ void BPTree::insert(int value){
     }
 }
 
+bool BPTree::search(int value){
+    if(this->tree) {
+        node* root = this->tree->route(value);
+        
+    }
+    else{
+        if(start){
+            if(value > this->start->get_ith_key(this->start->key_count - 1)) {
+                if(this->start->next) return this->start->next->search(value);
+            }
+            else return this->start->search(value);
+        }
+    }
+    return false;
+}
+
 void BPTree::print(){
     if(this->tree) this->tree->print();
     else
