@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/Practice.dir/Assignment1.cpp.o  -o Practice -lglut -lGL -lGLU 

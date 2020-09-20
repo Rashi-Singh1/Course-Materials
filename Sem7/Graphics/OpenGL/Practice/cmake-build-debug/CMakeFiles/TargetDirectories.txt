@@ -1,0 +1,3 @@
+/home/rashi/Documents/Course Materials/Sem7/Graphics/OpenGL/Practice/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/rashi/Documents/Course Materials/Sem7/Graphics/OpenGL/Practice/cmake-build-debug/CMakeFiles/Practice.dir
+/home/rashi/Documents/Course Materials/Sem7/Graphics/OpenGL/Practice/cmake-build-debug/CMakeFiles/edit_cache.dir

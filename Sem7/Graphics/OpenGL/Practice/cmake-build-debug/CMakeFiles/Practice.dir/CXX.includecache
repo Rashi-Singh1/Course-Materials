@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/rashi/Documents/Course Materials/Sem7/Graphics/OpenGL/Practice/Assignment1.cpp
+iostream
+-
+GL/glut.h
+-
+bits/stdc++.h
+-
+glm/glm.hpp
+-
+
