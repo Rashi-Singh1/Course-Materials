@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/Practice.dir/way3.cpp.o  -o Practice -lglut -lGL -lGLU 
