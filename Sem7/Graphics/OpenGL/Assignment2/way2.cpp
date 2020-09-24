@@ -59,6 +59,7 @@ void reshape (int width, int height);
 
 using namespace std;
 
+//done
 int main (int argc, char** argv)
 {
     /* Get input data. */
@@ -101,6 +102,7 @@ void reshape (int width, int height)
     WindowSizeY3 = height / 3;
 }
 
+//done for now
 void display (void)
 /* This is the callback function that gets executed every time the display
    needs to be updated.
@@ -117,6 +119,7 @@ void display (void)
     glutSwapBuffers ();
 }
 
+//done in mouse
 void interact (void)
 /* This function gets the input data for the program to process. */
 {
@@ -159,6 +162,7 @@ void interact (void)
         markd = (maxy-miny)/number_of_points * MARK_FACTOR;
 }
 
+//done
 void mark_points ()
 /* This routine makes a mark for each data point in the arrays. */
 {

@@ -3,5 +3,5 @@ project(Practice)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Practice way3.cpp)
+add_executable(Practice way2.cpp)
 target_link_libraries(Practice -lglut -lGL -lGLU)

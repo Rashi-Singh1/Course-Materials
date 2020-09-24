@@ -1,18 +1,21 @@
 #include <iostream>
 #include <GL/glut.h>
 #include <bits/stdc++.h>
-typedef float f;
+#define MAX_POINTS 100
+#define SPLINE_LIST 4
+#define DELTA_T 0.005  /* time step factor for drawing each curve            */
+typedef double d;
 using namespace std;
 
 class Point {
 public:
-    float x{}, y{};
+    d x{}, y{};
     Point()= default;
-    Point(float x, float y){
+    Point(d x, d y){
         this->x = x;
         this->y = y;
     }
-    const Point& operator=(const Point &rPoint){
+    Point& operator=(const Point &rPoint){
         x = rPoint.x;
         y = rPoint.y;
         return *this;
@@ -23,15 +26,6 @@ vector<Point> points;
 int SCREEN_HEIGHT = 500;
 int pCount = 0;
 int clicks = 4;
-
-void myInit() {
-    glClearColor(1.0,1.0,1.0,0.0);
-    glColor3f(0.0,0.0,0.0);
-    glPointSize(3);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0.0,640.0,0.0,500.0);
-}
 
 void drawDot(int x, int y) {
     glBegin(GL_POINTS);
@@ -46,17 +40,97 @@ void drawLine(Point p1, Point p2) {
     glEnd();
     glFlush();
 }
+d smoothen (d t) {
+    d tp2, tp1, tm2, tm1;
 
-void myMouse(int button, int state, int x, int y) {
+    if (t <= -2.0)
+        return 0.0;
+    else if (t <= -1.0)
+    {
+        tp2 = t + 2.0;
+        return tp2 * tp2 * tp2 / 6.0;
+    }
+    else if (t <= 0.0)
+    {
+        tp2 = t + 2.0;
+        tp1 = t + 1.0;
+        tp2 = tp2 * tp2 * tp2 / 6.0;
+        tp1 = 2.0 * tp1 * tp1 * tp1 /3.0;
+        return tp2 - tp1;
+    }
+    else if (t <= 1.0)
+    {
+        tm1 = 1.0 - t;
+        tm2 = 2.0 - t;
+        tm1 = 2.0 * tm1 * tm1 * tm1 / 3.0;
+        tm2 = tm2 * tm2 * tm2 / 6.0;
+        return tm2 - tm1;
+    }
+    else if (t <= 2.0)
+    {
+        tm2 = 2.0 - t;
+        return tm2 * tm2 * tm2 / 6.0;
+    }
+    else
+        return 0.0;
+}
+void spline (){                  /* This function approximates the data with spline curves. */
+    d xs[MAX_POINTS+4], ys[MAX_POINTS+4];
+    d x, y, t, bt1, bt2, bt3, bt4;
+    int i;
+    char title[] = "Spline Approximation";
+
+    /* Load local arrays with data and make the two endpoints multiple so that
+     * they are interpolated. */
+
+    xs[0] = xs[1] = points[0].x;
+    ys[0] = ys[1] = points[0].y;
+    for (i=0; i<pCount; i++)
+    {
+        xs[i+2] = points[i].x;
+        ys[i+2] = points[i].y;
+    }
+    xs[pCount+2] = xs[pCount+3] = points[pCount-1].x;
+    ys[pCount+2] = ys[pCount+3] = points[pCount-1].y;
+
+    /* Compute the values to plot. */
+
+    glNewList (SPLINE_LIST, GL_COMPILE);
+    glColor3f (0.0, 0.0, 0.0);  /* Draw curve in black. */
+    glBegin (GL_LINE_STRIP);
+    glVertex2d (points[0].x, points[0].y);
+    for (i=0; i<=pCount; i++)
+        for (t=DELTA_T; t<1.0+DELTA_T/2.0; t+=DELTA_T)
+        {
+            bt1 = smoothen(t - 2.0);
+            bt2 = smoothen(t - 1.0);
+            bt3 = smoothen(t);
+            bt4 = smoothen(t + 1.0);
+            x = xs[i]*bt4 + xs[i+1]*bt3 + xs[i+2]*bt2 + xs[i+3]*bt1;
+            y = ys[i]*bt4 + ys[i+1]*bt3 + ys[i+2]*bt2 + ys[i+3]*bt1;
+            glVertex2d (x, y);
+        }
+    glEnd ();
+    glEndList ();
+}
+
+void myInit() {
+    glClearColor(1.0,1.0,1.0,0.0);
+    glColor3f(0.0,0.0,0.0);
+    glPointSize(3);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0.0,640.0,0.0,500.0);
+}
+void mouse(int button, int state, int x, int y) {
     // If left button was clicked
     if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         // Store where mouse was clicked, Y is backwards.
-        points.emplace_back(Point((f)x,(f)(SCREEN_HEIGHT - y)));
+        points.emplace_back(Point((d)x,(d)(SCREEN_HEIGHT - y)));
         pCount++;
 
         // Draw the red  dot.
         drawDot(x, SCREEN_HEIGHT - y);
-
 
         // If (click-amout) points are drawn do the curve.
         if(pCount == clicks)
@@ -67,15 +141,14 @@ void myMouse(int button, int state, int x, int y) {
                 drawLine(points[k], points[k+1]);
 
             Point p1 = points[0];
+            spline();
             glColor3f(0.0,0.0,0.0);
 
             pCount = 0;
         }
     }
 }
-
-
-void myDisplay() {
+void display() {
     glClear(GL_COLOR_BUFFER_BIT);
     glFlush();
 }
@@ -85,11 +158,10 @@ int main(int argc, char *argv[]) {
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
     glutInitWindowSize(640,500);
     glutInitWindowPosition(100,150);
-    glutCreateWindow("Bezier Curve");
-    glutMouseFunc(myMouse);
-    glutDisplayFunc(myDisplay);
+    glutCreateWindow("rashi170101052 - Assignment 2");
+    glutMouseFunc(mouse);
+    glutDisplayFunc(display);
     myInit();
     glutMainLoop();
-
     return 0;
 }
