@@ -24,12 +24,11 @@ public:
 
 vector<Point> points;
 int SCREEN_HEIGHT = 500;
-int pCount = 0;
 int clicks = 4;
 
-void drawDot(int x, int y) {
+void drawDot(Point p) {
     glBegin(GL_POINTS);
-    glVertex2i(x,y);
+    glVertex2i(p.x,p.y);
     glEnd();
     glFlush();
 }
@@ -78,28 +77,22 @@ void spline (){                  /* This function approximates the data with spl
     d xs[MAX_POINTS+4], ys[MAX_POINTS+4];
     d x, y, t, bt1, bt2, bt3, bt4;
     int i;
-    char title[] = "Spline Approximation";
-
-    /* Load local arrays with data and make the two endpoints multiple so that
-     * they are interpolated. */
 
     xs[0] = xs[1] = points[0].x;
     ys[0] = ys[1] = points[0].y;
-    for (i=0; i<pCount; i++)
+    for (i=0; i<points.size(); i++)
     {
         xs[i+2] = points[i].x;
         ys[i+2] = points[i].y;
     }
-    xs[pCount+2] = xs[pCount+3] = points[pCount-1].x;
-    ys[pCount+2] = ys[pCount+3] = points[pCount-1].y;
-
-    /* Compute the values to plot. */
+    xs[points.size()+2] = xs[points.size()+3] = points[points.size()-1].x;
+    ys[points.size()+2] = ys[points.size()+3] = points[points.size()-1].y;
 
     glNewList (SPLINE_LIST, GL_COMPILE);
     glColor3f (0.0, 0.0, 0.0);  /* Draw curve in black. */
     glBegin (GL_LINE_STRIP);
     glVertex2d (points[0].x, points[0].y);
-    for (i=0; i<=pCount; i++)
+    for (i=0; i<=points.size(); i++)
         for (t=DELTA_T; t<1.0+DELTA_T/2.0; t+=DELTA_T)
         {
             bt1 = smoothen(t - 2.0);
@@ -126,26 +119,11 @@ void mouse(int button, int state, int x, int y) {
     // If left button was clicked
     if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         // Store where mouse was clicked, Y is backwards.
-        points.emplace_back(Point((d)x,(d)(SCREEN_HEIGHT - y)));
-        pCount++;
+        points.emplace_back(Point((d)x,(d)((d)SCREEN_HEIGHT - y)));
 
-        // Draw the red  dot.
-        drawDot(x, SCREEN_HEIGHT - y);
-
-        // If (click-amout) points are drawn do the curve.
-        if(pCount == clicks)
-        {
-            glColor3f(0.2,1.0,0.0);
-            // Drawing the control lines
-            for(int k=0;k<clicks-1;k++)
-                drawLine(points[k], points[k+1]);
-
-            Point p1 = points[0];
-            spline();
-            glColor3f(0.0,0.0,0.0);
-
-            pCount = 0;
-        }
+        for(auto p : points) drawDot(p);
+        for(int i = 0 ; i < points.size() - 1; i++) drawLine(points[i], points[i+1]);
+        spline();
     }
 }
 void display() {
