@@ -1,0 +1,4 @@
+/home/rashi/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/193.7288.25/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" "/home/rashi/Documents/Course Materials/Sem7/Graphics/OpenGL/Assignment2"
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/rashi/Documents/Course Materials/Sem7/Graphics/OpenGL/Assignment2/cmake-build-debug

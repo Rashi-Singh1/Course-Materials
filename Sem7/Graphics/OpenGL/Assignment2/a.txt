@@ -1,0 +1,206 @@
+package com.example;
+
+import android.graphics.Path;
+
+import java.util.Collection;
+import java.util.List;
+
+public class PolyBezierPathUtil {
+
+  /**
+   * Computes a Poly-Bezier curve passing through a given list of knots.
+   * The curve will be twice-differentiable everywhere and satisfy natural
+   * boundary conditions at both ends.
+   *
+   * @param knots a list of knots
+   * @return      a Path representing the twice-differentiable curve
+   *              passing through all the given knots
+   */
+  public Path computePathThroughKnots(List<Point> knots) {
+    throwExceptionIfInputIsInvalid(knots);
+
+    final Path polyBezierPath = new Path();
+    final Point firstKnot = knots.get(0);
+    polyBezierPath.moveTo(firstKnot.getX(), firstKnot.getY());
+
+    /*
+     * variable representing the number of Bezier curves we will join
+     * together
+     */
+    final int n = knots.size() - 1;
+
+    if (n == 1) {
+      final Point lastKnot = knots.get(1);
+      polyBezierPath.lineTo(lastKnot.getX(), lastKnot.getY());
+    } else {
+      final Point[] controlPoints = computeControlPoints(n, knots);
+
+      for (int i = 0; i < n; i++) {
+        final Point targetKnot = knots.get(i + 1);
+        appendCurveToPath(polyBezierPath, controlPoints[i], controlPoints[n + i], targetKnot);
+      }
+    }
+
+    return polyBezierPath;
+  }
+
+  private Point[] computeControlPoints(int n, List<Point> knots) {
+    final Point[] result = new Point[2 * n];
+
+    final Point[] target = constructTargetVector(n, knots);
+    final Float[] lowerDiag = constructLowerDiagonalVector(n - 1);
+    final Float[] mainDiag = constructMainDiagonalVector(n);
+    final Float[] upperDiag = constructUpperDiagonalVector(n - 1);
+
+    final Point[] newTarget = new Point[n];
+    final Float[] newUpperDiag = new Float[n - 1];
+
+    // forward sweep for control points c_i,0:
+    newUpperDiag[0] = upperDiag[0] / mainDiag[0];
+    newTarget[0] = target[0].scaleBy(1 / mainDiag[0]);
+
+    for (int i = 1; i < n - 1; i++) {
+      newUpperDiag[i] = upperDiag[i] /
+          (mainDiag[i] - lowerDiag[i - 1] * newUpperDiag[i - 1]);
+    }
+
+    for (int i = 1; i < n; i++) {
+      final float targetScale = 1 /
+          (mainDiag[i] - lowerDiag[i - 1] * newUpperDiag[i - 1]);
+
+      newTarget[i] =
+          (target[i].minus(newTarget[i - 1].scaleBy(lowerDiag[i - 1]))).scaleBy(targetScale);
+    }
+
+    // backward sweep for control points c_i,0:
+    result[n - 1] = newTarget[n - 1];
+
+    for (int i = n - 2; i >= 0; i--) {
+      result[i] = newTarget[i].minus(newUpperDiag[i], result[i + 1]);
+    }
+
+    // calculate remaining control points c_i,1 directly:
+    for (int i = 0; i < n - 1; i++) {
+      result[n + i] = knots.get(i + 1).scaleBy(2).minus(result[i + 1]);
+    }
+
+    result[2 * n - 1] = knots.get(n).plus(result[n - 1]).scaleBy(0.5f);
+
+    return result;
+  }
+
+  private Point[] constructTargetVector(int n, List<Point> knots) {
+    final Point[] result = new Point[n];
+
+    result[0] = knots.get(0).plus(2, knots.get(1));
+
+    for (int i = 1; i < n - 1; i++) {
+      result[i] = (knots.get(i).scaleBy(2).plus(knots.get(i + 1))).scaleBy(2);
+    }
+
+    result[result.length - 1] = knots.get(n - 1).scaleBy(8).plus(knots.get(n));
+
+    return result;
+  }
+
+  private Float[] constructLowerDiagonalVector(int length) {
+    final Float[] result = new Float[length];
+
+    for (int i = 0; i < result.length - 1; i++) {
+      result[i] = 1f;
+    }
+
+    result[result.length - 1] = 2f;
+
+    return result;
+  }
+
+  private Float[] constructMainDiagonalVector(int n) {
+    final Float[] result = new Float[n];
+
+    result[0] = 2f;
+
+    for (int i = 1; i < result.length - 1; i++) {
+      result[i] = 4f;
+    }
+
+    result[result.length - 1] = 7f;
+
+    return result;
+  }
+
+  private Float[] constructUpperDiagonalVector(int length) {
+    final Float[] result = new Float[length];
+
+    for (int i = 0; i < result.length; i++) {
+      result[i] = 1f;
+    }
+
+    return result;
+  }
+
+  private void appendCurveToPath(Path path, Point control1, Point control2, Point targetKnot) {
+    path.cubicTo(
+        control1.getX(),
+        control1.getY(),
+        control2.getX(),
+        control2.getY(),
+        targetKnot.getX(),
+        targetKnot.getY()
+    );
+  }
+
+  private void throwExceptionIfInputIsInvalid(Collection<Point> knots) {
+    if (knots.size() < 2) {
+      throw new IllegalArgumentException(
+          "Collection must contain at least two knots"
+      );
+    }
+  }
+
+}
+
+package com.example;
+
+/**
+ * API inspired by the Apache Commons Math Vector2D class.
+ */
+public class Point {
+
+  private final float x;
+  private final float y;
+
+  public Point(final float x, final float y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  public float getX() {
+    return x;
+  }
+
+  public float getY() {
+    return y;
+  }
+
+  public Point plus(float factor, Point ePointF) {
+    return new Point(x + factor * ePointF.x, y + factor * ePointF.y);
+  }
+
+  public Point plus(Point ePointF) {
+    return plus(1.0f, ePointF);
+  }
+
+  public Point minus(float factor, Point ePointF) {
+    return new Point(x - factor * ePointF.x, y - factor * ePointF.y);
+  }
+
+  public Point minus(Point ePointF) {
+    return minus(1.0f, ePointF);
+  }
+
+  public Point scaleBy(float factor) {
+    return new Point(factor * x, factor * y);
+  }
+
+}
