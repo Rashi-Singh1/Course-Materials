@@ -1,4 +1,3 @@
-/home/rashi/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/rashi/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/intrinsics_gen.dir
-/home/rashi/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/rashi/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir
+/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir

@@ -1,16 +1,20 @@
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CXX"
+  "C"
   )
 # The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/rashi/Documents/Course Materials/Sem7/BTP/Program Files/parser2.cpp" "/home/rashi/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir/parser2.cpp.o"
+set(CMAKE_DEPENDS_CHECK_C
+  "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/IR-FSMD/src/fsmda.tab.c" "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmda.tab.c.o"
+  "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/IR-FSMD/src/fsmdaCode.c" "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmdaCode.c.o"
+  "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/IR-FSMD/src/lex.yy.c" "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir/IR-FSMD/src/lex.yy.c.o"
+  "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/IR-FSMD/src/lva.c" "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir/IR-FSMD/src/lva.c.o"
+  "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/IR-FSMD/src/normalization.c" "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir/IR-FSMD/src/normalization.c.o"
+  "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/IR-FSMD/src/valPropCode.c" "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/CMakeFiles/Program_Files.dir/IR-FSMD/src/valPropCode.c.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_C_COMPILER_ID "GNU")
 
 # The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/usr/lib/llvm-10/include"
+set(CMAKE_C_TARGET_INCLUDE_PATH
   )
 
 # Targets to which this target links.

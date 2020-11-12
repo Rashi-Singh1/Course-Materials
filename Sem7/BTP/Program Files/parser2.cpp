@@ -1,4 +1,4 @@
-#include "llvm/IR/Metadata.h"
+#include "llvm/include/llvm/IR/Metadata.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IRReader/IRReader.h"
 #include "llvm/Pass.h"
@@ -12,7 +12,10 @@
 using namespace llvm;
 using namespace std;
 typedef long long ll;
-ll intState = 0;
+ll intState = 0, intVar = 0;
+unordered_map<string,ll> stateMap;
+unordered_map<string, string> boolCondMap;
+vector<string> highVariables;
 bool instructionHandled;
 
 static string getSimpleNodeLabel(const BasicBlock* node) {
@@ -20,17 +23,18 @@ static string getSimpleNodeLabel(const BasicBlock* node) {
     string Str;
     raw_string_ostream OS(Str);
     node->printAsOperand(OS, false);
-    return OS.str();
+    if(stateMap.count(OS.str()) == 0) stateMap[OS.str()] = intState++;
+    return "q" + to_string(stateMap[OS.str()]);
 }
 static string getSimpleOperandName(const Value* node) {
     if (!node->getName().empty()) return node->getName().str();
     string Str;
     raw_string_ostream OS(Str);
     node->printAsOperand(OS, false);
-    return OS.str();
+    if(stateMap.count(OS.str()) == 0) stateMap[OS.str()] = intState++;
+    return "q" + to_string(stateMap[OS.str()]);
 }
 
-//TODO::handle fcmp predicate
 string getPredicate(CmpInst::Predicate pred){
     string ans;
     switch(pred){
@@ -98,23 +102,41 @@ string getLHS(Instruction* instIter){
         instIter->printAsOperand(OS, false);
         resultName.assign(OS.str());
     }
-    return resultName;
+    if(stateMap.count(resultName) == 0) stateMap[resultName] = intState++;
+    return "q" + to_string(stateMap[resultName]);
+}
+
+//TODO: only considering Br for now, check for callBr etc. later
+int getBranches(BasicBlock* bbIter){
+    if(bbIter == nullptr) return 0;
+    BasicBlock &basicBlock = *bbIter;
+    for (auto instIter = basicBlock.begin(); instIter != basicBlock.end(); instIter++) {
+        Instruction &inst = *instIter;
+        if(inst.getOpcode() == Instruction::Br){
+//            return min(2, (int)inst.getNumOperands());
+            return 1;
+        }
+    }
+    return 0;
 }
 
 //special cases
 void handleBr(Instruction *instIter, ofstream* output){
-    instructionHandled = true;
+//    instructionHandled = true;
     if(instIter == nullptr) return;
     if(instIter->getNumOperands() == 1) {
         *output << " " << getSimpleOperandName(instIter->getOperand(0));
         return;
     }
     else{
-        *output << " i" << intState << ";\n";
-        *output << "i" << intState++ << " 2 " << getSimpleOperandName(instIter->getOperand(0)) << " | " << getSimpleOperandName(instIter->getOperand(1)) << "\n";
+        *output << " q" << intState << ";\n";
+        *output << "q" << intState++ << " 2 ";
+        string lhs = getSimpleOperandName(instIter->getOperand(0));
+        if(boolCondMap.count(lhs) == 0) return;
+        *output  << boolCondMap[lhs] << " | - " << getSimpleOperandName(instIter->getOperand(1)) << "\n";
         int intStateLength = intState > 1 ? (ll)log10(intState-1) + 1 : 1;
         for(int i = 0 ; i < intStateLength; i++) *output << " ";
-        *output << "    !(" << getSimpleOperandName(instIter->getOperand(0))  << ") | " << getSimpleOperandName(instIter->getOperand(2));
+        *output << "    !" << boolCondMap[lhs]  << " | - " << getSimpleOperandName(instIter->getOperand(2));
     }
 }
 void handleStore(Instruction *instIter, ofstream* output){
@@ -123,7 +145,11 @@ void handleStore(Instruction *instIter, ofstream* output){
 }
 void handleLoad(Instruction *instIter, ofstream* output){
     instructionHandled = true;
-    if(instIter) *output<< getLHS(instIter) << " = " << getSimpleOperandName(instIter->getOperand(0));
+    if(instIter) {
+        string operandName = getSimpleOperandName(instIter->getOperand(0));
+        *output<< getLHS(instIter) << " = " << operandName;
+        highVariables.push_back(operandName);
+    }
 }
 void handleCmp(Instruction* instIter, ofstream* output){
     instructionHandled = true;
@@ -133,7 +159,8 @@ void handleCmp(Instruction* instIter, ofstream* output){
     if (auto *cmpInst = dyn_cast<CmpInst>(instIter)) {
         pred = cmpInst->getPredicate();
     }
-    *output << resultName << " = (" << getSimpleOperandName(instIter->getOperand(0)) << " " << getPredicate(pred) << " " << getSimpleOperandName(instIter->getOperand(1)) << ")";
+    string rhs = "(" + getSimpleOperandName(instIter->getOperand(0)) + " " + getPredicate(pred) + " " + getSimpleOperandName(instIter->getOperand(1)) + ")";
+    boolCondMap[resultName] = rhs;
 }
 void handleDefault(Instruction* instIter, ofstream* output){
     if(instIter == nullptr) return;
@@ -337,17 +364,18 @@ static inline bool isOtherOp(unsigned OpCode) {
     return OpCode >= Instruction::OtherOpsBegin && OpCode < Instruction::OtherOpsEnd;
 }
 
-bool getComma(Instruction* instIter){
-    bool comma;
-    auto opCode = instIter->getOpcode();
-    comma = ((opCode != Instruction::Br));
-//            && opCode != Instruction::Alloca);
+bool getComma(BasicBlock::const_iterator instr, BasicBlock* bbIter){
+    if(bbIter == NULL) return false;
+    int opCode = instr->getOpcode();
+    bool comma = (opCode != Instruction::Br);
+    comma &= !(opCode == Instruction::ICmp || opCode == Instruction::FCmp);
+    comma &= (instr++ != bbIter->end() && !(instr->getOpcode() == Instruction::Br || instr->getOpcode() == Instruction::ICmp || instr->getOpcode() == Instruction::FCmp));
     return comma;
 }
 
-void handleInstruction(Instruction* instIter, ofstream* output){
+bool handleInstruction(Instruction* instIter, ofstream* output){
     instructionHandled = false;
-    if(instIter == nullptr || output == nullptr) return;
+    if(instIter == nullptr || output == nullptr) return false;
     auto opCode = instIter->getOpcode();
     if(Instruction::isBinaryOp(opCode)) handleBinaryOps(instIter, opCode, output);
     else if(Instruction::isUnaryOp(opCode)) handleUnaryOps(instIter, opCode, output);
@@ -356,25 +384,36 @@ void handleInstruction(Instruction* instIter, ofstream* output){
     else if(isTermOp(opCode)) handleTermOps(instIter, opCode, output);
     else if(isMemoryOp(opCode)) handleMemoryOps(instIter, opCode, output);
     else if(isOtherOp(opCode)) handleOtherOps(instIter, opCode, output);
-    if(!instructionHandled) handleDefault(instIter, output);
+//    if(!instructionHandled) handleDefault(instIter, output);
+    if(!instructionHandled) cout<<instIter->getOpcode()<<" not handled\n";
+    return instructionHandled;
 }
 void handleBasicBlock(BasicBlock* bbIter, ofstream* output){
     if(bbIter == nullptr || output == nullptr) return;
     BasicBlock &basicBlock = *bbIter;
-    *output << getSimpleNodeLabel(&basicBlock) << " 1 - | ";
-    bool comma;
-    for (auto instIter = basicBlock.begin(); instIter != basicBlock.end(); ) {
+    int branches = getBranches(bbIter);
+    *output << getSimpleNodeLabel(&basicBlock) << " " << branches ;
+    if(branches > 0) *output << " - | ";
+    bool comma = false;
+    for (auto instIter = basicBlock.begin(); instIter != basicBlock.end(); instIter++) {
         Instruction &inst = *instIter;
-        handleInstruction(&inst, output);
-        comma = getComma(&inst);
-        comma &= (instIter++ != bbIter->end() & (instIter->getOpcode() != Instruction::Br));
         if(comma) *output << ", ";
+        comma = handleInstruction(&inst, output);
+        comma &= getComma(instIter, bbIter);
+        /*          TODO: Fix this comma issue
+           Instruction &inst = *instIter;
+           bool cur = handleInstruction(&inst, output);
+           if(cur && comma) *output << ", ";
+           if(cur) comma &= getComma(instIter, bbIter);
+       }
+       */
     }
-    *output << ";\n";
+    *output << " ;\n";
 }
 void generateFSMD(unique_ptr<Module>& module){
     ofstream output;
     output.open("output.txt");
+    output << "\"output.txt\"\n";
     if(!module) {
         output.close();
         return;
@@ -388,6 +427,8 @@ void generateFSMD(unique_ptr<Module>& module){
             handleBasicBlock(&basicBlock, &output);
         }
     }
+    output << "\nhigh variables\n";
+    for(auto x : highVariables) output << x << endl;
     output.close();
 }
 
