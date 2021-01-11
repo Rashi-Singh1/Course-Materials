@@ -123,167 +123,45 @@ Program_Files/fast:
 	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/build
 .PHONY : Program_Files/fast
 
-IR-FSMD/src/fsmda.tab.o: IR-FSMD/src/fsmda.tab.c.o
+#=============================================================================
+# Target rules for targets named intrinsics_gen
 
-.PHONY : IR-FSMD/src/fsmda.tab.o
+# Build rule for target.
+intrinsics_gen: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 intrinsics_gen
+.PHONY : intrinsics_gen
 
-# target to build an object file
-IR-FSMD/src/fsmda.tab.c.o:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmda.tab.c.o
-.PHONY : IR-FSMD/src/fsmda.tab.c.o
+# fast build rule for target.
+intrinsics_gen/fast:
+	$(MAKE) -f CMakeFiles/intrinsics_gen.dir/build.make CMakeFiles/intrinsics_gen.dir/build
+.PHONY : intrinsics_gen/fast
 
-IR-FSMD/src/fsmda.tab.i: IR-FSMD/src/fsmda.tab.c.i
+parser2.o: parser2.cpp.o
 
-.PHONY : IR-FSMD/src/fsmda.tab.i
-
-# target to preprocess a source file
-IR-FSMD/src/fsmda.tab.c.i:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmda.tab.c.i
-.PHONY : IR-FSMD/src/fsmda.tab.c.i
-
-IR-FSMD/src/fsmda.tab.s: IR-FSMD/src/fsmda.tab.c.s
-
-.PHONY : IR-FSMD/src/fsmda.tab.s
-
-# target to generate assembly for a file
-IR-FSMD/src/fsmda.tab.c.s:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmda.tab.c.s
-.PHONY : IR-FSMD/src/fsmda.tab.c.s
-
-IR-FSMD/src/fsmdaCode.o: IR-FSMD/src/fsmdaCode.c.o
-
-.PHONY : IR-FSMD/src/fsmdaCode.o
+.PHONY : parser2.o
 
 # target to build an object file
-IR-FSMD/src/fsmdaCode.c.o:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmdaCode.c.o
-.PHONY : IR-FSMD/src/fsmdaCode.c.o
+parser2.cpp.o:
+	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/parser2.cpp.o
+.PHONY : parser2.cpp.o
 
-IR-FSMD/src/fsmdaCode.i: IR-FSMD/src/fsmdaCode.c.i
+parser2.i: parser2.cpp.i
 
-.PHONY : IR-FSMD/src/fsmdaCode.i
-
-# target to preprocess a source file
-IR-FSMD/src/fsmdaCode.c.i:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmdaCode.c.i
-.PHONY : IR-FSMD/src/fsmdaCode.c.i
-
-IR-FSMD/src/fsmdaCode.s: IR-FSMD/src/fsmdaCode.c.s
-
-.PHONY : IR-FSMD/src/fsmdaCode.s
-
-# target to generate assembly for a file
-IR-FSMD/src/fsmdaCode.c.s:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmdaCode.c.s
-.PHONY : IR-FSMD/src/fsmdaCode.c.s
-
-IR-FSMD/src/lex.yy.o: IR-FSMD/src/lex.yy.c.o
-
-.PHONY : IR-FSMD/src/lex.yy.o
-
-# target to build an object file
-IR-FSMD/src/lex.yy.c.o:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/lex.yy.c.o
-.PHONY : IR-FSMD/src/lex.yy.c.o
-
-IR-FSMD/src/lex.yy.i: IR-FSMD/src/lex.yy.c.i
-
-.PHONY : IR-FSMD/src/lex.yy.i
+.PHONY : parser2.i
 
 # target to preprocess a source file
-IR-FSMD/src/lex.yy.c.i:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/lex.yy.c.i
-.PHONY : IR-FSMD/src/lex.yy.c.i
+parser2.cpp.i:
+	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/parser2.cpp.i
+.PHONY : parser2.cpp.i
 
-IR-FSMD/src/lex.yy.s: IR-FSMD/src/lex.yy.c.s
+parser2.s: parser2.cpp.s
 
-.PHONY : IR-FSMD/src/lex.yy.s
-
-# target to generate assembly for a file
-IR-FSMD/src/lex.yy.c.s:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/lex.yy.c.s
-.PHONY : IR-FSMD/src/lex.yy.c.s
-
-IR-FSMD/src/lva.o: IR-FSMD/src/lva.c.o
-
-.PHONY : IR-FSMD/src/lva.o
-
-# target to build an object file
-IR-FSMD/src/lva.c.o:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/lva.c.o
-.PHONY : IR-FSMD/src/lva.c.o
-
-IR-FSMD/src/lva.i: IR-FSMD/src/lva.c.i
-
-.PHONY : IR-FSMD/src/lva.i
-
-# target to preprocess a source file
-IR-FSMD/src/lva.c.i:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/lva.c.i
-.PHONY : IR-FSMD/src/lva.c.i
-
-IR-FSMD/src/lva.s: IR-FSMD/src/lva.c.s
-
-.PHONY : IR-FSMD/src/lva.s
+.PHONY : parser2.s
 
 # target to generate assembly for a file
-IR-FSMD/src/lva.c.s:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/lva.c.s
-.PHONY : IR-FSMD/src/lva.c.s
-
-IR-FSMD/src/normalization.o: IR-FSMD/src/normalization.c.o
-
-.PHONY : IR-FSMD/src/normalization.o
-
-# target to build an object file
-IR-FSMD/src/normalization.c.o:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/normalization.c.o
-.PHONY : IR-FSMD/src/normalization.c.o
-
-IR-FSMD/src/normalization.i: IR-FSMD/src/normalization.c.i
-
-.PHONY : IR-FSMD/src/normalization.i
-
-# target to preprocess a source file
-IR-FSMD/src/normalization.c.i:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/normalization.c.i
-.PHONY : IR-FSMD/src/normalization.c.i
-
-IR-FSMD/src/normalization.s: IR-FSMD/src/normalization.c.s
-
-.PHONY : IR-FSMD/src/normalization.s
-
-# target to generate assembly for a file
-IR-FSMD/src/normalization.c.s:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/normalization.c.s
-.PHONY : IR-FSMD/src/normalization.c.s
-
-IR-FSMD/src/valPropCode.o: IR-FSMD/src/valPropCode.c.o
-
-.PHONY : IR-FSMD/src/valPropCode.o
-
-# target to build an object file
-IR-FSMD/src/valPropCode.c.o:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/valPropCode.c.o
-.PHONY : IR-FSMD/src/valPropCode.c.o
-
-IR-FSMD/src/valPropCode.i: IR-FSMD/src/valPropCode.c.i
-
-.PHONY : IR-FSMD/src/valPropCode.i
-
-# target to preprocess a source file
-IR-FSMD/src/valPropCode.c.i:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/valPropCode.c.i
-.PHONY : IR-FSMD/src/valPropCode.c.i
-
-IR-FSMD/src/valPropCode.s: IR-FSMD/src/valPropCode.c.s
-
-.PHONY : IR-FSMD/src/valPropCode.s
-
-# target to generate assembly for a file
-IR-FSMD/src/valPropCode.c.s:
-	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/IR-FSMD/src/valPropCode.c.s
-.PHONY : IR-FSMD/src/valPropCode.c.s
+parser2.cpp.s:
+	$(MAKE) -f CMakeFiles/Program_Files.dir/build.make CMakeFiles/Program_Files.dir/parser2.cpp.s
+.PHONY : parser2.cpp.s
 
 # Help Target
 help:
@@ -294,24 +172,10 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... Program_Files"
-	@echo "... IR-FSMD/src/fsmda.tab.o"
-	@echo "... IR-FSMD/src/fsmda.tab.i"
-	@echo "... IR-FSMD/src/fsmda.tab.s"
-	@echo "... IR-FSMD/src/fsmdaCode.o"
-	@echo "... IR-FSMD/src/fsmdaCode.i"
-	@echo "... IR-FSMD/src/fsmdaCode.s"
-	@echo "... IR-FSMD/src/lex.yy.o"
-	@echo "... IR-FSMD/src/lex.yy.i"
-	@echo "... IR-FSMD/src/lex.yy.s"
-	@echo "... IR-FSMD/src/lva.o"
-	@echo "... IR-FSMD/src/lva.i"
-	@echo "... IR-FSMD/src/lva.s"
-	@echo "... IR-FSMD/src/normalization.o"
-	@echo "... IR-FSMD/src/normalization.i"
-	@echo "... IR-FSMD/src/normalization.s"
-	@echo "... IR-FSMD/src/valPropCode.o"
-	@echo "... IR-FSMD/src/valPropCode.i"
-	@echo "... IR-FSMD/src/valPropCode.s"
+	@echo "... intrinsics_gen"
+	@echo "... parser2.o"
+	@echo "... parser2.i"
+	@echo "... parser2.s"
 .PHONY : help
 
 

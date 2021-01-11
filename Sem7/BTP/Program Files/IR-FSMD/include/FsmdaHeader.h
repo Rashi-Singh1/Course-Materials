@@ -57,8 +57,12 @@ typedef struct propagated_vector{
 }PROPAGATED_VECTOR;
 
 typedef struct propagated_leak{
-
+    boolean leak_Of_Variable[SYM_TAB_SIZE];
 }PROPAGATED_LEAK;
+
+typedef struct propagated_leak_array{
+    PROPAGATED_LEAK leak_Via_Variable[SYM_TAB_SIZE];
+}PROPAGATED_LEAK_ARRAY;
 
 typedef struct state_struct{
     char  state_id[100];            // this is the name of the structure
@@ -68,12 +72,12 @@ typedef struct state_struct{
     boolean VAPFLAG;                //flag to track VAP (Visited Along a Path)
     TRANSITION_ST  *translist;      // this is the list of all transitions from this state
     PROPAGATED_VECTOR propVector;   //value propagation code end
-    PROPAGATED_LEAK propLeak;
 }NODE_ST;         //This is the structure for a state
 typedef struct fsmd_struct{
     char name[150];
-    int  numstates;
+    int  numstates, numHighVariables;
     NODE_ST  states[MAX_STATES];
+    int highVariables[STACK_SIZE];
 }FSMD;
 
 typedef struct ralpha_node{
@@ -82,7 +86,6 @@ typedef struct ralpha_node{
 }r_alpha;
 
 typedef struct live_variables_list LV;
-
 typedef struct path_struct PATH_ST;
 typedef struct path_nodes_struct{
     int state;                          // This is the pointer to the state along the path
@@ -101,9 +104,9 @@ struct path_struct{
     NC *condition;      // This is to hold the conditional expression for traversing the path
     LV* live;           //The following stores the list of variables that are LIVE at the END of this path
     boolean finalPath;  //The following boolean variable stores TRUE if it is the final path in the FSMD,
-
     r_alpha *transformations;   // This holds the data transfomations along the path
     PATH_NODE   *nodeslist;     // This is the pointer to the list of states along the path
+    PROPAGATED_LEAK_ARRAY propLeakArray;
     struct path_struct  *cp;
     struct path_struct  *next;  // This is the pointer to  the next path structure in the paths list
 };                         // PATH_ST is the name of the  structure which holds information about a path

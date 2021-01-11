@@ -3261,6 +3261,25 @@ void printCutPoints(FSMD* fsmd){
     }
 }
 
+int highVariables0[STACK_SIZE], highVariables1[STACK_SIZE];
+void readHighVariables(FSMD* fsmd){
+    FILE* highVariables;
+    if((highVariables= fopen("variables.txt", "r")) == NULL){
+        printf("Can not read high variables from variables.txt\n");
+        return;
+    }
+
+    int line;
+    int i = 0;
+    while (fscanf(highVariables, "%d", &line) > 0) {
+        if(i < STACK_SIZE - 1 ) {
+            fsmd->highVariables[i++] = line;
+        }
+    }
+    fsmd->numHighVariables = i;
+    fclose( highVariables );
+}
+
 //Main Function
 //Takes FSMDs M0 and M1 as input
 int main( int argc, char* argv[] ){
@@ -3276,6 +3295,7 @@ int main( int argc, char* argv[] ){
     flagVar_List = FALSE;
     outputVar0.no_of_elements = 0;
     callParser(argv[1]);
+    readHighVariables(M0);
 
 #ifdef DETAILS
     print_fsmd( M0 );
@@ -3284,6 +3304,7 @@ int main( int argc, char* argv[] ){
     flagVar_List = TRUE;
     outputVar1.no_of_elements = 0;
     callParser(argv[2]);
+    readHighVariables(M1);
 
 #ifdef DETAILS
     print_fsmd( M1 );
@@ -3295,7 +3316,7 @@ int main( int argc, char* argv[] ){
 
     NO_OF_VARIABLES = stab.numsymbols;
 
-    printf("M0 Cycles : \n");
+    printf("\nM0 Cycles : \n");
     findAllCutpoints(M0);
     printf("\nM0 Cutpoints : \n");
     printCutPoints(M0);
@@ -3308,6 +3329,9 @@ int main( int argc, char* argv[] ){
     printCutPoints(M1);
     printf("\nM1 PathCover : \n");
     printPathCover(M1);
+
+    print_fsmd(M1);
+
 
     securityChecker(M0, M1);
 //    containmentChecker(M0, M1); //V0 and V1 are globally defined

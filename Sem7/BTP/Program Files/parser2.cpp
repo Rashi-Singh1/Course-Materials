@@ -1,14 +1,13 @@
-#include "llvm/include/llvm/IR/Metadata.h"
+#include "llvm/IR/Metadata.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IRReader/IRReader.h"
-#include "llvm/Pass.h"
 #include "llvm/Support/SourceMgr.h"
-#include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/Instructions.h"
 #include <iostream>
 #include <fstream>
 #include <bits/stdc++.h>
+
 using namespace llvm;
 using namespace std;
 typedef long long ll;
@@ -107,6 +106,9 @@ string getLHS(Instruction* instIter){
 }
 
 //TODO: only considering Br for now, check for callBr etc. later
+
+
+
 int getBranches(BasicBlock* bbIter){
     if(bbIter == nullptr) return 0;
     BasicBlock &basicBlock = *bbIter;
@@ -427,7 +429,8 @@ void generateFSMD(unique_ptr<Module>& module){
             handleBasicBlock(&basicBlock, &output);
         }
     }
-    output << "\nhigh variables\n";
+    output.close();
+    output.open("variables.txt");
     for(auto x : highVariables) output << x << endl;
     output.close();
 }

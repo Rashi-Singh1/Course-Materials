@@ -1,1 +1,0 @@
-/usr/bin/cc -g   CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmdaCode.c.o CMakeFiles/Program_Files.dir/IR-FSMD/src/fsmda.tab.c.o CMakeFiles/Program_Files.dir/IR-FSMD/src/normalization.c.o CMakeFiles/Program_Files.dir/IR-FSMD/src/valPropCode.c.o CMakeFiles/Program_Files.dir/IR-FSMD/src/lex.yy.c.o CMakeFiles/Program_Files.dir/IR-FSMD/src/lva.c.o  -o Program_Files 
