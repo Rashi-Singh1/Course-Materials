@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files
+# Install script for directory: /home/rashi/Documents/Course-Materials/Sem7/BTP/Program Files
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/mnt/c/Users/rashi/OneDrive/Documents/Course Materials/Sem7/BTP/Program Files/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/rashi/Documents/Course-Materials/Sem7/BTP/Program Files/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

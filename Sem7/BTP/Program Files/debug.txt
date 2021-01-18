@@ -1,0 +1,88 @@
+Entering Function: main
+	Entering Basic Block: q0
+		No of branches : 1
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q0
+
+	Entering Basic Block: q5
+		No of branches : 1
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q5
+
+	Entering Basic Block: q10
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q10
+
+	Entering Basic Block: q16
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q16
+
+	Entering Basic Block: q9
+		No of branches : 1
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q9
+
+	Entering Basic Block: q23
+		No of branches : 1
+		Instr: call
+		Instr: br
+	Exiting Basic Block: q23
+
+	Entering Basic Block: q22
+		No of branches : 1
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q22
+
+	Entering Basic Block: q29
+		No of branches : 1
+		Instr: call
+		Instr: br
+	Exiting Basic Block: q29
+
+	Entering Basic Block: q28
+		No of branches : 1
+		Instr: call
+		Instr: br
+	Exiting Basic Block: q28
+
+	Entering Basic Block: q30
+		No of branches : 1
+		Instr: br
+	Exiting Basic Block: q30
+
+	Entering Basic Block: q24
+		No of branches : 0
+		Instr: ret
+	Exiting Basic Block: q24
+
+Exiting Function: main
+
+Entering Function: printf
+Exiting Function: printf
+

@@ -1,12 +1,14 @@
-#include "llvm/IR/Metadata.h"
+//#include "llvm/IR/Metadata.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IRReader/IRReader.h"
-#include "llvm/Support/SourceMgr.h"
+//#include "llvm/Support/SourceMgr.h"
 #include "llvm/IR/InstrTypes.h"
-#include "llvm/IR/Instructions.h"
+//#include "llvm/IR/Instructions.h"
 #include <iostream>
 #include <fstream>
 #include <bits/stdc++.h>
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/Support/SourceMgr.h>
 
 using namespace llvm;
 using namespace std;
@@ -249,7 +251,7 @@ void handleTermOps(Instruction* instIter, int opCode, ofstream* output){
             break;
         case Instruction::CatchSwitch:
             break;
-        case Instruction::CallBr:
+        case Instruction::Call:
             break;
         case Instruction::TermOpsEnd:
             break;
@@ -349,9 +351,9 @@ void handleOtherOps(Instruction* instIter, int opCode, ofstream* output){
             break;
         case Instruction::LandingPad:
             break;
-        case Instruction::Freeze:
-            break;
         case Instruction::OtherOpsEnd:
+            break;
+        default:
             break;
     }
 }

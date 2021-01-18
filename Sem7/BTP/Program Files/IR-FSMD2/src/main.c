@@ -180,7 +180,7 @@ void calculateLeakPropagation(FSMD* fsmd) {
             checkLeak(fsmd, path, atoi(++leftVariable), assignment.rhs);
             trans = trans->next;
         }
-        printLeakProp(path);
+//        printLeakProp(path);
     }
     printf("\n");
 }

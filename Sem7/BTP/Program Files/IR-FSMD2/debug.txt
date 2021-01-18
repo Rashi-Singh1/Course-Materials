@@ -1,0 +1,609 @@
+Entering Function: advance
+	Entering Basic Block: q0
+		No of branches : 1
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q0
+
+	Entering Basic Block: q8
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q8
+
+	Entering Basic Block: q14
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: store
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q14
+
+	Entering Basic Block: q22
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q22
+
+	Entering Basic Block: q28
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: load
+		Instr: fmul
+		Instr: fadd
+		Instr: load
+		Instr: load
+		Instr: fmul
+		Instr: fadd
+		Instr: call
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fmul
+		Instr: fdiv
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q28
+
+	Entering Basic Block: q144
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q144
+
+	Entering Basic Block: q27
+		No of branches : 1
+		Instr: br
+	Exiting Basic Block: q27
+
+	Entering Basic Block: q147
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q147
+
+	Entering Basic Block: q13
+		No of branches : 1
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q13
+
+	Entering Basic Block: q150
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q150
+
+	Entering Basic Block: q156
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q156
+
+	Entering Basic Block: q188
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q188
+
+	Entering Basic Block: q155
+		No of branches : 0
+		Instr: ret
+	Exiting Basic Block: q155
+
+Exiting Function: advance
+
+Entering Function: sqrt
+Exiting Function: sqrt
+
+Entering Function: energy
+	Entering Basic Block: q6
+		No of branches : 1
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q6
+
+	Entering Basic Block: q68
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q68
+
+	Entering Basic Block: q9
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: fadd
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: fadd
+		Instr: fmul
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q9
+
+	Entering Basic Block: q53
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q53
+
+	Entering Basic Block: q58
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: load
+		Instr: fmul
+		Instr: fadd
+		Instr: load
+		Instr: load
+		Instr: fmul
+		Instr: fadd
+		Instr: call
+		Instr: store
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fdiv
+		Instr: load
+		Instr: fsub
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q58
+
+	Entering Basic Block: q109
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q109
+
+	Entering Basic Block: q112
+		No of branches : 1
+		Instr: br
+	Exiting Basic Block: q112
+
+	Entering Basic Block: q113
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q113
+
+	Entering Basic Block: q116
+		No of branches : 0
+		Instr: load
+		Instr: ret
+	Exiting Basic Block: q116
+
+Exiting Function: energy
+
+Entering Function: offset_momentum
+	Entering Basic Block: q6
+		No of branches : 1
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q6
+
+	Entering Basic Block: q17
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q17
+
+	Entering Basic Block: q56
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: load
+		Instr: load
+		Instr: load
+		Instr: sext
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: load
+		Instr: fmul
+		Instr: load
+		Instr: fadd
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q56
+
+	Entering Basic Block: q58
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q58
+
+	Entering Basic Block: q61
+		No of branches : 0
+		Instr: load
+		Instr: fneg
+		Instr: fdiv
+		Instr: load
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: store
+		Instr: load
+		Instr: fneg
+		Instr: fdiv
+		Instr: load
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: store
+		Instr: load
+		Instr: fneg
+		Instr: fdiv
+		Instr: load
+		Instr: getelementptr
+		Instr: getelementptr
+		Instr: store
+		Instr: ret
+	Exiting Basic Block: q61
+
+Exiting Function: offset_momentum
+
+Entering Function: main
+	Entering Basic Block: q6
+		No of branches : 1
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: alloca
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: store
+		Instr: call
+		Instr: call
+		Instr: call
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q6
+
+	Entering Basic Block: q31
+		No of branches : 1
+		Instr: load
+		Instr: load
+		Instr: icmp
+		Instr: br
+	Exiting Basic Block: q31
+
+	Entering Basic Block: q68
+		No of branches : 1
+		Instr: call
+		Instr: br
+	Exiting Basic Block: q68
+
+	Entering Basic Block: q77
+		No of branches : 1
+		Instr: load
+		Instr: add
+		Instr: store
+		Instr: br
+	Exiting Basic Block: q77
+
+	Entering Basic Block: q9
+		No of branches : 0
+		Instr: call
+		Instr: call
+		Instr: ret
+	Exiting Basic Block: q9
+
+Exiting Function: main
+
+Entering Function: printf
+Exiting Function: printf
+

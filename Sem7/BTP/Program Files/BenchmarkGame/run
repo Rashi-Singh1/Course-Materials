@@ -1,0 +1,3 @@
+for f in *.c; do
+    clang -S -emit-llvm $f
+done
